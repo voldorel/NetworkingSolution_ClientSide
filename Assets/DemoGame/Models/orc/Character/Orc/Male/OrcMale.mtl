@@ -1,0 +1,100 @@
+#
+# OrcMale.mtl
+#
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl 7ab13085f33182d72361d70dbea0bbbe
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Textures\\Bakednpctextures\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\Textures\\Bakednpctextures\\7ab13085f33182d72361d70dbea0bbbe.tga.tga
+
+newmtl Hair_Dbl
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\orc\\\\Hair.tga.tga
+
+newmtl Shoulder_Leather_Horde_B_03Orange
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Item\\ObjectComponents\\Shoulder\\Shoulder_Leather_Horde_B_03Orange.tga
+
+newmtl Shoulder_Leather_Horde_B_03Orange
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Item\\ObjectComponents\\Shoulder\\Shoulder_Leather_Horde_B_03Orange.tga
+
+newmtl Axe_1H_Hatchet_A_01Blue
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Item\\ObjectComponents\\Weapon\\Axe_1H_Hatchet_A_01Blue.tga
+

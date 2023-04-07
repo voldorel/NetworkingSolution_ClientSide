@@ -1,0 +1,20 @@
+#
+# axe_2h_deathknight_c_01.mtl
+#
+
+newmtl axe_2h_deathknight_c_01blue
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Item\\Objectcomponents\\weapon\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\Weapon\\Item\\Objectcomponents\\weapon\\axe_2h_deathknight_c_01blue.tga.tga
+
+newmtl axe_2h_deathknight_c_01blue_Lum
+illum 1
+Kd 0.000 0.000 0.000
+Ka 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Item\\Objectcomponents\\weapon\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\Weapon\\Item\\Objectcomponents\\weapon\\axe_2h_deathknight_c_01blue.tga.tga
+

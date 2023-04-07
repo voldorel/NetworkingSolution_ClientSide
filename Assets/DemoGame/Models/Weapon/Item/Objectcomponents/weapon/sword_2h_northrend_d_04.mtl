@@ -1,0 +1,12 @@
+#
+# sword_2h_northrend_d_04.mtl
+#
+
+newmtl sword_2h_northrend_d_04wood
+illum 1
+Kd 0.000 0.000 0.000
+Ka 0.500 0.500 0.500
+Ks 0.000 0.000 0.000
+Ns 1.0
+map_Kd ..\\..\\..\\Item\\Objectcomponents\\weapon\\E:\\Games\\unity\\MultiPlayerProject\\Assets\\DemoGame\\Models\\Weapon\\Item\\Objectcomponents\\weapon\\sword_2h_northrend_d_04wood.tga.tga
+
