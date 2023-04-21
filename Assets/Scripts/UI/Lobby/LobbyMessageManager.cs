@@ -7,7 +7,7 @@ using Lobby.EntranceMessage;
 using Lobby.Other;
 using Lobby.SelfMessage;
 
-public class DebugMessageManager : MonoBehaviour
+public class LobbyMessageManager : MonoBehaviour
 {
     public Transform ChatParent;
     public LobbyMessage LobbyMessagePrefab;
@@ -15,15 +15,24 @@ public class DebugMessageManager : MonoBehaviour
     public LobbyMessage LobbyMessageEntrancePrefab;
     public Sprite TestAvatarSprite;
     public ScrollRect ScrollRect;
-    
+    public static LobbyMessageManager Instance;
+
     void Start()
     {
         LayoutRebuilder.MarkLayoutForRebuild((RectTransform)ChatParent);
     }
 
+
+    public void Awake()
+    {
+        if (Instance != null)
+            DestroyImmediate(Instance);
+        Instance = this;
+    }
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H))
+        /*if (Input.GetKeyDown(KeyCode.H))
         {
             LobbyMessageOther message = Instantiate(LobbyMessagePrefab, ChatParent) as LobbyMessageOther;
             message.SetText("سلام و عرض ادب خدمت دوستان ارجمند . گرانقدر و به درد نخور و زشت و دوست نداشتنی . این پیام برای تست این بازی آنلاین طراحی شده است!");
@@ -58,18 +67,39 @@ public class DebugMessageManager : MonoBehaviour
             //if (ScrollRect.normalizedPosition.y > 0.4f)
                 StartCoroutine(ScrollToBottomDelayed(ScrollRect));
             //ScrollToBottom(ScrollRect);
-        }
+        }*/
 
     }
-    public IEnumerator ScrollToBottomDelayed(ScrollRect scrollRect)
+    private static IEnumerator ScrollToBottomDelayed(ScrollRect scrollRect)
     {
         yield return new WaitForFixedUpdate();
         yield return new WaitForEndOfFrame();
         ScrollToBottom(scrollRect);
     }
 
-    public void ScrollToBottom(ScrollRect scrollRect)
+    private static void ScrollToBottom(ScrollRect scrollRect)
     {
         scrollRect.normalizedPosition = new Vector2(0, 0);
     }
+
+
+    public static void CreateEntranceMessage(string senderName)
+    {
+        LobbyEntranceMessage lobbyMessage = Instantiate(Instance.LobbyMessageEntrancePrefab, Instance.ChatParent) as LobbyEntranceMessage;
+        lobbyMessage.SetEnterChatText(senderName);
+        //if (ScrollRect.normalizedPosition.y > 0.4f)
+        Instance.StartCoroutine(ScrollToBottomDelayed(Instance.ScrollRect));
+        //ScrollToBottom(ScrollRect);
+    }
+
+    public static void CreateOtherMessage(string message, string senderName)
+    {
+
+    }
+
+    public static void CreateSelfMessage(string message, string senderName)
+    {
+
+    }
+
 }

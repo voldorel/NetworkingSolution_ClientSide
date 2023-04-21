@@ -15,6 +15,8 @@ namespace MyNetwork
         public delegate void EnterMemberAction();
         public delegate void ExitMemberAction();
         public delegate void MatchMakingSuccess();
+        public delegate void ConnectionSuccess();
+        public delegate void ConnectionFailure();
 
 
 
@@ -23,6 +25,8 @@ namespace MyNetwork
         public event ExitMemberAction OnExitLobby;
         public event ReceiveMessageAction OnLeaveLobby;//needs implementation suggested by vs2022
         public event MatchMakingSuccess OnMatchMakingSuccess;
+        public event ConnectionSuccess OnConnectionSuccess;
+        public event ConnectionFailure OnConnectionFailure;
 
         public void Start()
         {
@@ -31,26 +35,46 @@ namespace MyNetwork
             Connection.Instance.OnEnterLobby += OnEnterLobbyMethod;
             Connection.Instance.OnExitLobby += OnExitLobbyMethod;
             Connection.Instance.OnMatchMakingSuccess+= OnMatchMakingSuccessMethod;
+            Connection.Instance.OnConnectionSuccess += OnConnectionSuccessMethod;
+            Connection.Instance.OnConnectionFailure += OnConnectionFailureMethod;
         }
+
+        
 
         public async void SendText(string text)
         {
             await Connection.Instance.SendText(text, "LobbyMessage");
         }
 
-        private void OnEnterLobbyMethod()
+        public async void SetUsername(string newUsername)
         {
             try
             {
-                if (OnEnterLobby != null)
-                {
-                    OnEnterLobby?.Invoke();
-                }
+                await Connection.Instance.SendText(newUsername, "UsernameRegister");
+                Connection.Instance.SetUsername(newUsername);
             }
-            catch (Exception ex)
+            catch
             {
-                Debug.LogException(ex);
+
             }
+        }
+
+        public async void JoinMatchMaking()
+        {
+            try
+            {
+                await Connection.Instance.SendText("", "MatchMakingRequest");
+            }
+            catch
+            {
+
+            }
+        }
+
+
+        private void OnEnterLobbyMethod()
+        {
+            OnEnterLobby?.Invoke();
         }
 
         private void OnExitLobbyMethod()
@@ -68,8 +92,21 @@ namespace MyNetwork
             OnMatchMakingSuccess?.Invoke();
         }
 
+        private void OnConnectionFailureMethod()
+        {
+            OnConnectionFailure?.Invoke();
+        }
+
+        private void OnConnectionSuccessMethod()
+        {
+            OnConnectionSuccess?.Invoke();
+        }
 
 
+        public string GetUsername()
+        {
+            return Connection.Instance.GetUsername();
+        }
 
     }
 }

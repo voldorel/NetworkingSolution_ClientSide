@@ -12,8 +12,12 @@ namespace MyNetwork
 {
     public class Connection : MonoBehaviour
     {
+        private string _username;//this should change to an object of a class with its own seprate file in the namespace
+
+
         public WebSocket WebSocket;
         public delegate void ConnectionSuccess();
+        public delegate void ConnectionFailure();
         public delegate void ReceiveMessageAction(string text);
         public delegate void ReceiveLobbyMessageAction(string text);
         public delegate void ReceiveGameMessageAction(string text);
@@ -29,6 +33,7 @@ namespace MyNetwork
         public event ReceiveLobbyMessageAction OnReceiveLobbyMessage;
         public event ReceiveGameMessageAction OnReceiveGameMessage;
         public event ConnectionSuccess OnConnectionSuccess;
+        public event ConnectionSuccess OnConnectionFailure;
         public event OnMatchMakingSuccessAction OnMatchMakingSuccess;
 
         public static Connection Instance {  get; private set; }
@@ -43,11 +48,11 @@ namespace MyNetwork
         }
 
 
-        public async Task ConnectToServer()
+        public void ConnectToServer(string remoteAddress, string remoteIP)
         {
             try
             {
-                WebSocket = new WebSocket("wss://localhost:7004/ws");
+                WebSocket = new WebSocket("wss://" + remoteAddress + ":" + remoteIP + "/ws");
                 
                 WebSocket.OnMessage += (e) =>
                 {
@@ -65,11 +70,18 @@ namespace MyNetwork
                     {
                         OnMatchMakingSuccess?.Invoke();
                     }
+                    if (requestType.Equals("LobbyJoined"))
+                    {
+                        OnEnterLobby?.Invoke();
+                    }
                 };
                 WebSocket.OnOpen += () =>
                 {
-                    if (OnConnectionSuccess != null)
-                        OnConnectionSuccess?.Invoke();
+                    OnConnectionSuccess?.Invoke();
+                };
+                WebSocket.OnError += (e) =>
+                {
+                    OnConnectionFailure?.Invoke();
                 };
                 WebSocket.OnClose += (e) =>
                 {
@@ -78,7 +90,7 @@ namespace MyNetwork
                 };
 
 
-                await WebSocket.Connect();
+                WebSocket.Connect();
             }
             catch (Exception ex)
             {
@@ -91,7 +103,15 @@ namespace MyNetwork
             var message = System.Text.Encoding.UTF8.GetString(bytes);
         }
 
+        public string GetUsername()
+        {
+            return _username;
+        }
 
+        public void SetUsername(string username)
+        {
+            _username = username;
+        }
         
         
         private async void OnApplicationQuit()

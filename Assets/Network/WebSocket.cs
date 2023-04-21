@@ -454,7 +454,7 @@ namespace NativeWebSocket
             m_TokenSource?.Cancel();
         }
 
-        public async Task Connect()
+        public async void Connect()
         {
             try
             {
