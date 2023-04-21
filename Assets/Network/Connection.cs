@@ -14,8 +14,8 @@ namespace MyNetwork
     {
         private string _username;//this should change to an object of a class with its own seprate file in the namespace
 
-
         public WebSocket WebSocket;
+        #region lobby_actions
         public delegate void ConnectionSuccess();
         public delegate void ConnectionFailure();
         public delegate void ReceiveMessageAction(string text);
@@ -35,6 +35,27 @@ namespace MyNetwork
         public event ConnectionSuccess OnConnectionSuccess;
         public event ConnectionSuccess OnConnectionFailure;
         public event OnMatchMakingSuccessAction OnMatchMakingSuccess;
+        #endregion
+
+        #region session_actions
+        public delegate void ReceiveSessionText(string text);
+        public delegate void MemberEntered();
+        public delegate void MemberLeft();
+        public delegate void MatchStart();
+        public delegate void NetworkFunctionCallDelegate(string text);
+        public delegate void MatchEnd();
+
+
+        public event ReceiveSessionText OnReceiveSessionText;
+        public event MemberEntered OnMemberEntered;
+        public event MemberLeft OnMemberLeft;
+        public event MatchStart OnMatchStart;
+        public event NetworkFunctionCallDelegate OnNetworkFunctionCall;
+        public event MatchEnd OnMatchEnd;
+        #endregion
+
+
+
 
         public static Connection Instance {  get; private set; }
 
@@ -74,6 +95,38 @@ namespace MyNetwork
                     {
                         OnEnterLobby?.Invoke();
                     }
+
+                    if (requestType.Equals("SessionStart"))
+                    {
+                        OnMatchStart?.Invoke();
+                    }
+
+                    if (requestType.Equals("SessionEnterMember"))
+                    {
+                        OnMemberEntered?.Invoke();
+                    }
+
+                    if (requestType.Equals("SessionLeaveMember"))
+                    {
+                        OnMemberLeft?.Invoke();
+                    }
+
+                    if (requestType.Equals("SessionText"))
+                    {
+                        OnReceiveSessionText?.Invoke(requestContent);
+                    }
+
+                    if (requestType.Equals("NetworkFunctionCall"))
+                    {
+                        OnNetworkFunctionCall?.Invoke(requestContent);
+                    }
+
+                    if (requestType.Equals("SessionEnd"))
+                    {
+                        OnMatchEnd?.Invoke();
+                    }
+
+
                 };
                 WebSocket.OnOpen += () =>
                 {
@@ -138,7 +191,7 @@ namespace MyNetwork
                     jObject.Add("Content", text);
                     jObject.Add("RequestType", request);
                     await WebSocket.SendJToken(jObject);
-                    completionFunction();
+                    completionFunction?.Invoke();
                     //Debug.Log("messageSent");
                 }
             }

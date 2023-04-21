@@ -32,12 +32,12 @@ namespace MyNetwork
         public void Start()
         {
             this.hideFlags = HideFlags.HideInInspector;
-            Connection.Instance.OnReceiveLobbyMessage += (e) => OnReceiveLobbyMessageMethod(e);
-            Connection.Instance.OnEnterLobby += OnEnterLobbyMethod;
-            Connection.Instance.OnExitLobby += OnExitLobbyMethod;
-            Connection.Instance.OnMatchMakingSuccess+= OnMatchMakingSuccessMethod;
-            Connection.Instance.OnConnectionSuccess += OnConnectionSuccessMethod;
-            Connection.Instance.OnConnectionFailure += OnConnectionFailureMethod;
+            Connection.Instance.OnReceiveLobbyMessage += (e) => ReceiveLobbyMessageMethod(e);
+            Connection.Instance.OnEnterLobby += EnterLobbyMethod;
+            Connection.Instance.OnExitLobby += ExitLobbyMethod;
+            Connection.Instance.OnMatchMakingSuccess+= MatchMakingSuccessMethod;
+            Connection.Instance.OnConnectionSuccess += ConnectionSuccessMethod;
+            Connection.Instance.OnConnectionFailure += ConnectionFailureMethod;
         }
 
         
@@ -81,32 +81,32 @@ namespace MyNetwork
         }
 
 
-        private void OnEnterLobbyMethod()
+        private void EnterLobbyMethod()
         {
             OnEnterLobby?.Invoke();
         }
 
-        private void OnExitLobbyMethod()
+        private void ExitLobbyMethod()
         {
             OnExitLobby?.Invoke();
         }
 
-        private void OnReceiveLobbyMessageMethod(string text)
+        private void ReceiveLobbyMessageMethod(string text)
         {
             OnReceiveLobbyMessage?.Invoke(text);
         }
 
-        private void OnMatchMakingSuccessMethod()
+        private void MatchMakingSuccessMethod()
         {
             OnMatchMakingSuccess?.Invoke();
         }
 
-        private void OnConnectionFailureMethod()
+        private void ConnectionFailureMethod()
         {
             OnConnectionFailure?.Invoke();
         }
 
-        private void OnConnectionSuccessMethod()
+        private void ConnectionSuccessMethod()
         {
             OnConnectionSuccess?.Invoke();
         }
