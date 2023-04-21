@@ -5,9 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
+  - enabled: 1
+    path: Assets/Scenes/ChatRoom.unity
+    guid: cf89df1861bc86748867f07fa43f07e3
   - enabled: 1
     path: Assets/DemoGame/Scenes/GameScene.unity
     guid: 37003d1845a852048b0d4212ab2aceed

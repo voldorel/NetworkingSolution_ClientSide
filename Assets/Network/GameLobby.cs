@@ -11,6 +11,7 @@ namespace MyNetwork
 {
     public class GameLobby : MonoBehaviour
     {
+        public delegate void ReceiveLobbyMessageAction(string text);
         public delegate void ReceiveMessageAction(string text);
         public delegate void EnterMemberAction();
         public delegate void ExitMemberAction();
@@ -20,7 +21,7 @@ namespace MyNetwork
 
 
 
-        public event ReceiveMessageAction OnReceiveMessage;
+        public event ReceiveLobbyMessageAction OnReceiveLobbyMessage;
         public event EnterMemberAction OnEnterLobby;
         public event ExitMemberAction OnExitLobby;
         public event ReceiveMessageAction OnLeaveLobby;//needs implementation suggested by vs2022
@@ -31,7 +32,7 @@ namespace MyNetwork
         public void Start()
         {
             this.hideFlags = HideFlags.HideInInspector;
-            Connection.Instance.OnReceiveLobbyMessage += (e) => OnReceiveMessageMethod(e);
+            Connection.Instance.OnReceiveLobbyMessage += (e) => OnReceiveLobbyMessageMethod(e);
             Connection.Instance.OnEnterLobby += OnEnterLobbyMethod;
             Connection.Instance.OnExitLobby += OnExitLobbyMethod;
             Connection.Instance.OnMatchMakingSuccess+= OnMatchMakingSuccessMethod;
@@ -41,9 +42,17 @@ namespace MyNetwork
 
         
 
-        public async void SendText(string text)
+        public async void SendLobbyText(string text)
         {
-            await Connection.Instance.SendText(text, "LobbyMessage");
+            JObject keyValuePairs = new JObject();
+            keyValuePairs.Add("username", GetUsername());
+            keyValuePairs.Add("messageText", text);
+            await Connection.Instance.SendText(keyValuePairs.ToString(), "LobbyMessage");
+        }
+
+        public async void SendSessionStartRequest()
+        {
+            await Connection.Instance.SendText("", "SessionStartRequest");
         }
 
         public async void SetUsername(string newUsername)
@@ -82,9 +91,9 @@ namespace MyNetwork
             OnExitLobby?.Invoke();
         }
 
-        private void OnReceiveMessageMethod(string text)
+        private void OnReceiveLobbyMessageMethod(string text)
         {
-            OnReceiveMessage?.Invoke(text);
+            OnReceiveLobbyMessage?.Invoke(text);
         }
 
         private void OnMatchMakingSuccessMethod()

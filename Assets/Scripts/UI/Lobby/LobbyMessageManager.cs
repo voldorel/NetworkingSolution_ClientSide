@@ -94,12 +94,21 @@ public class LobbyMessageManager : MonoBehaviour
 
     public static void CreateOtherMessage(string message, string senderName)
     {
-
+        LobbyMessageOther lobbyMessage = Instantiate(Instance.LobbyMessagePrefab, Instance.ChatParent) as LobbyMessageOther;
+        lobbyMessage.SetText(message);
+        lobbyMessage.InitSenderInfo(senderName, Instance.TestAvatarSprite);
+        //if (ScrollRect.normalizedPosition.y > 0.4f)
+        Instance.StartCoroutine(ScrollToBottomDelayed(Instance.ScrollRect));
+        //ScrollToBottom(ScrollRect);
     }
 
-    public static void CreateSelfMessage(string message, string senderName)
+    public static void CreateSelfMessage(string message)
     {
-
+        LobbyMessageSelf lobbyMessage = Instantiate(Instance.LobbyMessageSelfPrefab, Instance.ChatParent) as LobbyMessageSelf;
+        lobbyMessage.SetText(message);
+        //if (ScrollRect.normalizedPosition.y > 0.4f)
+        Instance.StartCoroutine(ScrollToBottomDelayed(Instance.ScrollRect));
+        //ScrollToBottom(ScrollRect);
     }
 
 }

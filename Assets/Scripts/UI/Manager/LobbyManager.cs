@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using MyNetwork;
 
@@ -40,7 +42,7 @@ public class LobbyManager : MonoBehaviour
     public void Start()
     {
         _gameLobby = gameObject.AddComponent<GameLobby>();
-        _gameLobby.OnReceiveMessage += (e) => OnReceiveText(e);
+        _gameLobby.OnReceiveLobbyMessage += (e) => OnReceiveLobbyText(e);
         _gameLobby.OnMatchMakingSuccess += () => OnMatchMakingSuccess();
         _gameLobby.OnConnectionSuccess += () => OnConnectionSuccess();
         _gameLobby.OnConnectionFailure += () => OnConnectionFailure();
@@ -56,10 +58,7 @@ public class LobbyManager : MonoBehaviour
 
     
 
-    public void OnClickSendTextMessage()
-    {
-        SendText(_inputText.text);
-    }
+    
 
     public async void Update()
     {
@@ -81,9 +80,35 @@ public class LobbyManager : MonoBehaviour
 
 
 
-    public void OnReceiveText(string text)
+    public void OnReceiveLobbyText(string text)
     {
+        try
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                InstantiateLobbyMessage(text);
+            });
+        } catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+        }
         
+    }
+
+    private void InstantiateLobbyMessage(string text)
+    {
+        JObject keyValuePairs = new JObject();
+        keyValuePairs = JObject.Parse(text);
+        string senderName = (string)keyValuePairs["username"];
+        string lobbyMessage = (string)keyValuePairs["messageText"];
+
+        if (senderName.Equals(_gameLobby.GetUsername()))
+        {
+            LobbyMessageManager.CreateSelfMessage(lobbyMessage);
+        }
+        else
+        {
+            LobbyMessageManager.CreateOtherMessage(lobbyMessage, senderName);
+        }
     }
 
     private void OnConnectionSuccess()
@@ -101,12 +126,14 @@ public class LobbyManager : MonoBehaviour
 
     public void OnMatchMakingSuccess()
     {
-        //load game scene
+        UnityMainThreadDispatcher.Instance().Enqueue(() => {
+            SceneManager.LoadScene("GameScene");
+        });
     }
 
-    public void SendText(string text)
+    public void SendLobbyText(string text)
     {
-        _gameLobby.SendText(text);
+        _gameLobby.SendLobbyText(text);
     }
 
 
@@ -121,7 +148,7 @@ public class LobbyManager : MonoBehaviour
 
     public void OnClickSetUsername()
     {
-        if (_nameTextInput.text.Length > 3)
+        if (_nameTextInput.text.Length >= 3)
         {
             _gameLobby.SetUsername(_nameTextInput.text);
             
@@ -130,6 +157,23 @@ public class LobbyManager : MonoBehaviour
         else
             MessageView.ShowMessage("نام وارد شده باید حداقل سه حرفی باشد!");
     }
+
+
+
+    public void OnClickSendLobbyMessage()
+    {
+        if (_inputText.text.Length >= 1)
+        {
+            _gameLobby.SendLobbyText(_inputText.text);
+            _inputText.text = "";
+        }
+        else
+        {
+            _gameLobby.SendSessionStartRequest();
+        }
+    }
+
+
 
 
     public void OnClickJoinLobby()
@@ -143,10 +187,7 @@ public class LobbyManager : MonoBehaviour
         _gameLobby.JoinMatchMaking();
     }
 
-    public void OnClickSendLobbyMessage()
-    {
-        Connection.Instance.ConnectToServer("localhost", "7004");
-    }
+    
 
     public void OnEnterLobby()
     {
