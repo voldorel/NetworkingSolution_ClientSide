@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Newtonsoft.Json.Linq;
+using MyNetwork;
 
 public class TurnBasedFighter : MonoBehaviour
 {
+    private GameSession gameSession;
+
+
+
+
     public Animator Player1Animator;
     public Animator Player2Animator;
     public Transform LeftDamageTextParent;
@@ -12,10 +19,35 @@ public class TurnBasedFighter : MonoBehaviour
     public DamageNumberText DamageNumberTextPrefab;
 
 
+
     public Button Button1;
     public Button Button2;
     public Button Button3;
 
+
+
+
+
+
+
+    private void Start()
+    {
+        
+        gameSession = new GameSession();
+
+
+
+
+        gameSession.OnMatchStart += response =>
+        {
+            Debug.Log("session start called " + response);
+        };
+
+
+
+    }
+
+    
 
     public void Update()
     {

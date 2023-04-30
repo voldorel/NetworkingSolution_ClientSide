@@ -369,8 +369,11 @@ namespace NativeWebSocket
 
     public class WebSocket : IWebSocket
     {
+        public delegate void WebSocketBinaryMessageEventHandler(Int32 timeCount);
+
         public event WebSocketOpenEventHandler OnOpen;
         public event WebSocketMessageEventHandler OnMessage;
+        public event WebSocketBinaryMessageEventHandler OnMessageBinary;
         public event WebSocketErrorEventHandler OnError;
         public event WebSocketCloseEventHandler OnClose;
 
@@ -720,6 +723,7 @@ namespace NativeWebSocket
                                 if (BitConverter.IsLittleEndian)
                                     Array.Reverse(x);
                                 //Debug.Log(BitConverter.ToInt32(x, 0));
+                                OnMessageBinary?.Invoke(BitConverter.ToInt32(x, 0));
                             }
                         }
                         else if (result.MessageType == WebSocketMessageType.Close)

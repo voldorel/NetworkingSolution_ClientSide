@@ -41,7 +41,7 @@ namespace MyNetwork
         public delegate void ReceiveSessionText(string text);
         public delegate void MemberEntered();
         public delegate void MemberLeft();
-        public delegate void MatchStart();
+        public delegate void MatchStart(string text);
         public delegate void NetworkFunctionCallDelegate(string text);
         public delegate void MatchEnd();
 
@@ -55,6 +55,10 @@ namespace MyNetwork
         #endregion
 
 
+        #region variables
+        private int _sessionTime;
+        #endregion
+
 
 
         public static Connection Instance {  get; private set; }
@@ -66,14 +70,17 @@ namespace MyNetwork
                 Destroy(Instance);
             Instance = this;
             DontDestroyOnLoad(this);
+            _sessionTime = 0;
         }
+
+
 
 
         public void ConnectToServer(string remoteAddress, string remoteIP)
         {
             try
             {
-                WebSocket = new WebSocket("wss://" + remoteAddress + ":" + remoteIP + "/ws");
+                WebSocket = new WebSocket("ws://" + remoteAddress + ":" + remoteIP + "/ws");
                 
                 WebSocket.OnMessage += (e) =>
                 {
@@ -98,7 +105,7 @@ namespace MyNetwork
 
                     if (requestType.Equals("SessionStart"))
                     {
-                        OnMatchStart?.Invoke();
+                        OnMatchStart?.Invoke(requestContent);
                     }
 
                     if (requestType.Equals("SessionEnterMember"))
@@ -106,10 +113,7 @@ namespace MyNetwork
                         OnMemberEntered?.Invoke();
                     }
 
-                    if (requestType.Equals("SessionLeaveMember"))
-                    {
-                        OnMemberLeft?.Invoke();
-                    }
+
 
                     if (requestType.Equals("SessionText"))
                     {
@@ -127,6 +131,16 @@ namespace MyNetwork
                     }
 
 
+                    if (requestType.Equals("GameData"))
+                    {
+                    }
+
+
+                    if (requestType.Equals("GameSynchronize"))//list of all netcalls and on going events in current game session
+                    {
+                    }
+
+
                 };
                 WebSocket.OnOpen += () =>
                 {
@@ -140,6 +154,15 @@ namespace MyNetwork
                 {
                     if (OnExitLobby != null)
                         OnExitLobby?.Invoke();
+                };
+                WebSocket.OnMessageBinary += e =>
+                {
+                    //currently only used to keep track of session time
+                    if (_sessionTime - e > 1)
+                    {
+                        Debug.Log("Out of Synch!!!");
+                    }
+                    _sessionTime = e;
                 };
 
 
@@ -202,8 +225,11 @@ namespace MyNetwork
         }
 
 
+        public int GetSessionTime()
+        {
+            return _sessionTime;
+        }
 
 
-        
     }
 }
