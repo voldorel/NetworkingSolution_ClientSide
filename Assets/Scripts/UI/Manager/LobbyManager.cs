@@ -60,7 +60,7 @@ public class LobbyManager : MonoBehaviour
 
     
 
-    public async void Update()
+    public void Update()
     {
         /*if (Input.GetKeyUp(KeyCode.A))
         {

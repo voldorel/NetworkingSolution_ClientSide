@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using Newtonsoft.Json.Linq;
 using MyNetwork;
 
-public class TurnBasedFighter : MonoBehaviour
+public class TurnBasedFighter : GameSession
 {
-    private GameSession gameSession;
+    
 
 
 
@@ -32,18 +32,18 @@ public class TurnBasedFighter : MonoBehaviour
 
     private void Start()
     {
-        
-        gameSession = new GameSession();
+        base.InitGameSession();
 
 
 
 
-        gameSession.OnMatchStart += response =>
+        base.OnMatchStart += response =>
         {
             Debug.Log("session start called " + response);
         };
 
 
+        //_gameSession.OnNetworkFunctionCall
 
     }
 
@@ -84,6 +84,11 @@ public class TurnBasedFighter : MonoBehaviour
         }
     }
 
+
+
+
+
+
     public IEnumerator ShowHitAnimation(bool kill)
     {
         Player2Animator.SetTrigger("attack");
@@ -123,6 +128,10 @@ public class TurnBasedFighter : MonoBehaviour
     {
         EnableAbilityButtons(false);
         StartCoroutine(ShowAttackAnimation(false));
+
+        JObject keyValuePairs = new JObject();
+        keyValuePairs.Add("AbilityNumber", 1);
+        NetCall("TestMethod1", keyValuePairs.ToString());
     }
 
     public void OnClickAttack2()
@@ -140,5 +149,12 @@ public class TurnBasedFighter : MonoBehaviour
         EnableAbilityButtons(false);
         yield return new WaitForSeconds(2);
         EnableAbilityButtons(true);
+    }
+
+
+
+    public void TestMethod1(string value)
+    {
+        Debug.Log(value + " #");
     }
 }

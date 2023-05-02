@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MyNetwork
 {
-    public class Connection : MonoBehaviour
+    public sealed class Connection : MonoBehaviour
     {
         private string _username;//this should change to an object of a class with its own seprate file in the namespace
 
@@ -57,6 +57,7 @@ namespace MyNetwork
 
         #region variables
         private int _sessionTime;
+        public bool IsLoadingGameSession { get; private set; }
         #endregion
 
 
@@ -71,6 +72,7 @@ namespace MyNetwork
             Instance = this;
             DontDestroyOnLoad(this);
             _sessionTime = 0;
+            IsLoadingGameSession = false;
         }
 
 
@@ -122,7 +124,15 @@ namespace MyNetwork
 
                     if (requestType.Equals("NetworkFunctionCall"))
                     {
-                        OnNetworkFunctionCall?.Invoke(requestContent);
+                        try
+                        {
+                            JToken netCallToken = WebSocket.FromBson<JToken>(requestContent);
+                            OnNetworkFunctionCall?.Invoke((string)netCallToken["Content"]);
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Debug.LogException(ex);
+                        }
                     }
 
                     if (requestType.Equals("SessionEnd"))
@@ -161,8 +171,14 @@ namespace MyNetwork
                     if (_sessionTime - e > 1)
                     {
                         Debug.Log("Out of Synch!!!");
+                        IsLoadingGameSession = true;
+
+                        //needs to request a sync and in the result, set IsLoadingGameSession to false and _sessionTime <= e
                     }
-                    _sessionTime = e;
+                    else
+                    {
+                        _sessionTime = e;
+                    }
                 };
 
 
