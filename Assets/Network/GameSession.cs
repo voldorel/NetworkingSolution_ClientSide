@@ -8,6 +8,7 @@ using System;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
 
+
 namespace MyNetwork
 {
     public class GameSession : MonoBehaviour
@@ -73,33 +74,28 @@ namespace MyNetwork
         {
             try
             {
-                /*JObject keyValuePairs = JObject.Parse(args);
-                string methodTypeName = (string)keyValuePairs["methodArgsType"];
-                Debug.Log(methodTypeName);
-                if (methodTypeName.Equals("int"))
-                {
-                    NetworkFunctionCallMethod<int>(args);
-                } else if (methodTypeName.Equals("string"))
-                {
-                    NetworkFunctionCallMethod<string>(args);
-                } else if (methodTypeName.Equals("float"))
-                {
-                    NetworkFunctionCallMethod<float>(args);
-                }*/
-
-                
                 JObject keyValuePairs = JObject.Parse(args);
                 string methodName = (string)keyValuePairs["methodName"];
-                string methodArgs = (string)keyValuePairs["methodArgs"];
-                var parameterTypes = new Type[] { typeof(string)};
-                MethodInfo methodInfo = typeof(TurnBasedFighter).GetMethod(methodName, parameterTypes);
-                var result = methodInfo.Invoke(new TurnBasedFighter(), new object[] { methodArgs });
+                int argsCount = (int)keyValuePairs["methodArgsCount"];
+                var parameterTypes = new Type[argsCount];
+                object[] newParams = new object[argsCount];
+                for (int i = 0; i < argsCount; i++)
+                {
+                    string paramValue = (string)keyValuePairs["methodArgs" + i];
+                    Type type = Type.GetType((string)keyValuePairs["methodArgType" + i]);
+                    parameterTypes[i] = type;
+                    object convertedValue = Convert.ChangeType(paramValue, type);
+                    newParams[i] = convertedValue;
+                }
 
+                List<MethodInfo> allMethodInfo = this.GetType().GetMethods(BindingFlags.NonPublic| BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList<MethodInfo>();
+                //MethodInfo methodInfo = this.GetType().GetMethod(methodName, parameterTypes);
+                var result = allMethodInfo.Find(i => i.Name.Equals(methodName)).Invoke(this, newParams);
 
             }
             catch
             {
-                Debug.LogError("Parsing netcall failed!");
+                Debug.LogError("Parsing netcall failed! ... might be because of multiple methods with same name but different arguments");
             }
         }
 
@@ -145,6 +141,20 @@ namespace MyNetwork
             JObject keyValuePairs = new JObject();
             keyValuePairs["methodName"] = methodName;
             keyValuePairs["methodArgs"] = methodArgs + "";
+            await Connection.Instance.SendText(keyValuePairs.ToString(), "NetworkFunctionCall");
+        }
+
+
+        protected async void NetCall(string methodName, params IConvertible[] args)
+        {
+            JObject keyValuePairs = new JObject();
+            keyValuePairs.Add("methodName", methodName);
+            keyValuePairs.Add("methodArgsCount", args.Length);
+            for (int i = 0; i < args.Length; i++)
+            {
+                keyValuePairs.Add("methodArgs" + i , args[i].ToString());
+                keyValuePairs.Add("methodArgType" + i , args[i].GetType().ToString());
+            }
             await Connection.Instance.SendText(keyValuePairs.ToString(), "NetworkFunctionCall");
         }
 

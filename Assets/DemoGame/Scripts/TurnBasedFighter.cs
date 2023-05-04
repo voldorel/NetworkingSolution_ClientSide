@@ -129,9 +129,7 @@ public class TurnBasedFighter : GameSession
         EnableAbilityButtons(false);
         StartCoroutine(ShowAttackAnimation(false));
 
-        JObject keyValuePairs = new JObject();
-        keyValuePairs.Add("AbilityNumber", 1);
-        NetCall("TestMethod1", keyValuePairs.ToString());
+        NetCall("TestMethod1", 1, 2.3f);
     }
 
     public void OnClickAttack2()
@@ -153,8 +151,8 @@ public class TurnBasedFighter : GameSession
 
 
 
-    public void TestMethod1(string value)
+    private void TestMethod1(int value, float x)
     {
-        Debug.Log(value + " #");
+        Debug.Log(value + " # " + x);
     }
 }
