@@ -90,7 +90,9 @@ namespace MyNetwork
 
                 List<MethodInfo> allMethodInfo = this.GetType().GetMethods(BindingFlags.NonPublic| BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList<MethodInfo>();
                 //MethodInfo methodInfo = this.GetType().GetMethod(methodName, parameterTypes);
-                var result = allMethodInfo.Find(i => i.Name.Equals(methodName)).Invoke(this, newParams);
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    var result = allMethodInfo.Find(i => i.Name.Equals(methodName)).Invoke(this, newParams);
+                });
 
             }
             catch

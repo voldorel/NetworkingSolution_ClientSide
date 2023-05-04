@@ -126,8 +126,7 @@ public class TurnBasedFighter : GameSession
 
     public void OnClickAttack1()
     {
-        EnableAbilityButtons(false);
-        StartCoroutine(ShowAttackAnimation(false));
+        
 
         NetCall("TestMethod1", 1, 2.3f);
     }
@@ -153,6 +152,8 @@ public class TurnBasedFighter : GameSession
 
     private void TestMethod1(int value, float x)
     {
+        EnableAbilityButtons(false);
+        StartCoroutine(ShowAttackAnimation(false));
         Debug.Log(value + " # " + x);
     }
 }
