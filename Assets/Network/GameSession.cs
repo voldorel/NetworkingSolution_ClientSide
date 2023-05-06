@@ -27,6 +27,8 @@ namespace MyNetwork
         protected event MatchEnd OnMatchEnd;
 
 
+
+
         public int SessionTime
         {
             get { return Connection.Instance.GetSessionTime(); }
@@ -36,12 +38,21 @@ namespace MyNetwork
         protected void InitGameSession()
         {
             this.hideFlags = HideFlags.HideInInspector;
+
             Connection.Instance.OnReceiveSessionText += (e) => ReceiveSessionTextMethod(e);
             Connection.Instance.OnMemberEntered += MemberEnteredMethod;
             Connection.Instance.OnMemberLeft += MemberLeftMethod;
             Connection.Instance.OnMatchStart += (e) => MatchStartMethod(e);
             Connection.Instance.OnNetworkFunctionCall += (e) => NetworkFunctionCallMethod(e);
             Connection.Instance.OnMatchEnd += MatchEndMethod;
+            Connection.Instance.OnSessionOutOfSync += () => {
+                MessageView.ShowLoadingView(true);
+            };
+            Connection.Instance.OnSessionSyncFinish += () => {
+                MessageView.ShowLoadingView(false);
+            };
+
+
         }
 
         private void ReceiveSessionTextMethod(string sessionMessage)
@@ -90,10 +101,7 @@ namespace MyNetwork
 
                 List<MethodInfo> allMethodInfo = this.GetType().GetMethods(BindingFlags.NonPublic| BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList<MethodInfo>();
                 //MethodInfo methodInfo = this.GetType().GetMethod(methodName, parameterTypes);
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    var result = allMethodInfo.Find(i => i.Name.Equals(methodName)).Invoke(this, newParams);
-                });
-
+                var result = allMethodInfo.Find(i => i.Name.Equals(methodName)).Invoke(this, newParams);
             }
             catch
             {
@@ -101,6 +109,11 @@ namespace MyNetwork
             }
         }
 
+
+        protected void NetworkUpdate()
+        {
+
+        }
 
 
         //broken code... too advanced for my knowledge. needs help or you know...
@@ -161,5 +174,11 @@ namespace MyNetwork
         }
 
 
+        protected void SynchronizeGame()
+        {
+            //StartCoroutine(SynchronizeCoroutine());
+        }
+
+        
     }
 }

@@ -47,6 +47,7 @@ public class LobbyManager : MonoBehaviour
         _gameLobby.OnConnectionSuccess += () => OnConnectionSuccess();
         _gameLobby.OnConnectionFailure += () => OnConnectionFailure();
         _gameLobby.OnEnterLobby += () => OnEnterLobby();
+        _gameLobby.OnLoginSuccess += (e) => OnLoginSuccess(e);
 
 
         _nameSelectionPage.SetActive(false);
@@ -84,14 +85,31 @@ public class LobbyManager : MonoBehaviour
     {
         try
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                InstantiateLobbyMessage(text);
-            });
+            InstantiateLobbyMessage(text);
         } catch (System.Exception ex)
         {
             Debug.LogException(ex);
         }
         
+    }
+
+
+    public void OnLoginSuccess(string text)
+    {
+        try
+        {
+            MessageView.ShowLoadingView(false);
+            JObject keyValuePairs = JObject.Parse(text);
+            if ((bool)keyValuePairs["IsInGameSession"])
+            {
+                SceneManager.LoadScene("GameScene");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+
     }
 
     private void InstantiateLobbyMessage(string text)
@@ -126,9 +144,7 @@ public class LobbyManager : MonoBehaviour
 
     public void OnMatchMakingSuccess()
     {
-        UnityMainThreadDispatcher.Instance().Enqueue(() => {
-            SceneManager.LoadScene("GameScene");
-        });
+        SceneManager.LoadScene("GameScene");
     }
 
     public void SendLobbyText(string text)
@@ -141,7 +157,8 @@ public class LobbyManager : MonoBehaviour
     public void OnClickConnectToServer()
     {
         MessageView.ShowLoadingView(true);
-        Connection.Instance.ConnectToServer(_serverAddressInput.text, _serverAddressPortInput.text);
+        Connection.Instance.ConnectToServer("localhost", "5000");
+        //Connection.Instance.ConnectToServer(_serverAddressInput.text, _serverAddressPortInput.text);
     }
 
 
@@ -150,9 +167,10 @@ public class LobbyManager : MonoBehaviour
     {
         if (_nameTextInput.text.Length >= 3)
         {
-            _gameLobby.SetUsername(_nameTextInput.text);
-            
-            StartCoroutine(UnlockJoinButton());
+            //_gameLobby.SetUsername(_nameTextInput.text);
+            _gameLobby.DoLogin(_nameTextInput.text);
+
+            UnlockJoinButton();
         }
         else
             MessageView.ShowMessage("نام وارد شده باید حداقل سه حرفی باشد!");
@@ -191,19 +209,16 @@ public class LobbyManager : MonoBehaviour
 
     public void OnEnterLobby()
     {
-        UnityMainThreadDispatcher.Instance().Enqueue(() => {
-            _nameSelectionPage.SetActive(false);
-            LobbyMessageManager.CreateEntranceMessage(_gameLobby.GetUsername()); 
-        });
+        _nameSelectionPage.SetActive(false);
+        LobbyMessageManager.CreateEntranceMessage(_gameLobby.GetUsername()); 
     }
     
 
 
-    private IEnumerator UnlockJoinButton()
+    private void UnlockJoinButton()
     {
         _verifyNameButton.interactable = false;
         _joinGameButton.interactable = false;
-        yield return new WaitForSeconds(1);
         _verifyNameButton.interactable = false;
         _joinGameButton.interactable = true;
     }

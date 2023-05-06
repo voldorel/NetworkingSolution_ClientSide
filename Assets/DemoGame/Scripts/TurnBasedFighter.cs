@@ -51,6 +51,10 @@ public class TurnBasedFighter : GameSession
 
     public void Update()
     {
+        base.NetworkUpdate();
+
+
+
         if (Input.GetKeyDown(KeyCode.A))
         {
             StartCoroutine(ShowAttackAnimation(false));

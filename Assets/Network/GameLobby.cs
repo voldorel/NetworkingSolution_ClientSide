@@ -18,6 +18,7 @@ namespace MyNetwork
         public delegate void MatchMakingSuccess();
         public delegate void ConnectionSuccess();
         public delegate void ConnectionFailure();
+        public delegate void LoginSuccess(string text);
 
 
 
@@ -28,6 +29,7 @@ namespace MyNetwork
         public event MatchMakingSuccess OnMatchMakingSuccess;
         public event ConnectionSuccess OnConnectionSuccess;
         public event ConnectionFailure OnConnectionFailure;
+        public event LoginSuccess OnLoginSuccess;
 
         public void Start()
         {
@@ -38,6 +40,7 @@ namespace MyNetwork
             Connection.Instance.OnMatchMakingSuccess+= MatchMakingSuccessMethod;
             Connection.Instance.OnConnectionSuccess += ConnectionSuccessMethod;
             Connection.Instance.OnConnectionFailure += ConnectionFailureMethod;
+            Connection.Instance.OnLoginSuccessAction += (e) => LoginSuccessMethod(e);
         }
 
         
@@ -64,7 +67,21 @@ namespace MyNetwork
             }
             catch
             {
+                Debug.LogError("Setting username failed");
+            }
+        }
 
+        public async void DoLogin(string newUsername)
+        {
+            try
+            {
+                await Connection.Instance.SendText(newUsername, "UserLogin");
+                MessageView.ShowLoadingView(true);
+                Connection.Instance.SetUsername(newUsername);
+            }
+            catch
+            {
+                Debug.LogError("Login Failed");
             }
         }
 
@@ -76,7 +93,7 @@ namespace MyNetwork
             }
             catch
             {
-
+                Debug.LogError("Join Matchmaking failed");
             }
         }
 
@@ -95,6 +112,12 @@ namespace MyNetwork
         {
             OnReceiveLobbyMessage?.Invoke(text);
         }
+
+        private void LoginSuccessMethod(string text)
+        {
+            OnLoginSuccess?.Invoke(text);
+        }
+
 
         private void MatchMakingSuccessMethod()
         {
