@@ -175,12 +175,13 @@ namespace MyNetwork
                         {
                             try
                             {
+                                int sessionTime = _sessionTime;
                                 lock (_netCallQueue)
                                 {
                                     NetEvent netEvent = new NetEvent(() => {
                                         JToken netCallToken = WebSocket.FromBson<JToken>(requestContent);
                                         OnNetworkFunctionCall?.Invoke((string)netCallToken["Content"]);
-                                    }, _sessionTime);
+                                    }, sessionTime);
                                     _netCallQueue.Enqueue(netEvent);
                                 }
                             }
@@ -194,15 +195,15 @@ namespace MyNetwork
                         {
                             try
                             {
+                                JObject keyValuePairs = JObject.Parse(requestContent);
+                                int eventTime = (int)keyValuePairs["eventTime"];
                                 lock (_netCallPreSyncQueue)
                                 {
                                     NetEvent netEvent = new NetEvent(() => {
-                                        JObject keyValuePairs = JObject.Parse(requestContent);
-                                        int eventTime = (int)keyValuePairs["eventTime"];
                                         string eventBody = (string)keyValuePairs["eventBody"];
                                         JToken netCallToken = WebSocket.FromBson<JToken>(eventBody);
                                         OnNetworkFunctionCall?.Invoke((string)netCallToken["Content"]);
-                                    }, _sessionTime);
+                                    }, eventTime);
                                     _netCallPreSyncQueue.Enqueue(netEvent);
                                 }
                             }
@@ -250,7 +251,7 @@ namespace MyNetwork
                 WebSocket.OnMessageBinary += e =>
                 {
                     //currently only used to keep track of session time
-                    Debug.Log(e + " " + _sessionTime + " " + _clientTime);
+                    //Debug.Log(e + " " + _sessionTime + " " + _clientTime);
                     if (e - _sessionTime > 1 && IsLoadingGameSession == false)
                     {
                         IsLoadingGameSession = true;
@@ -380,12 +381,17 @@ namespace MyNetwork
                 NetEvent netEvent;
                 netEventsQueue.TryDequeue(out netEvent);
                 int netcallTime = netEvent.GetNetcallTime();
+                Debug.Log(netcallTime + " "+ _clientTime);
                 if (netcallTime > _clientTime)
                 {
-                    yield return new WaitForSeconds(fixedTimePeriod * (netcallTime - _clientTime));
+                    //yield return new WaitForSeconds(fixedTimePeriod * (netcallTime - _clientTime));
+                    yield return new WaitForEndOfFrame();
+                    yield return new WaitForEndOfFrame();
                     _clientTime += (netcallTime - _clientTime);
                 }
+                Debug.Log(netcallTime + " "+ _clientTime);
                 UnityMainThreadDispatcher.Instance().Enqueue(netEvent.GetNetCallAction());
+                Debug.Log(_sessionTime + " " + _clientTime);
             }
         }
 
@@ -415,13 +421,14 @@ namespace MyNetwork
             yield return ProcessNetCallQueue(_netCallQueue);
             //while
             //done. enghadr bayad sari poshte timere felie server bodoe le belakhare time ha yeki beshe va liste net call jadida khali besehe
-            Debug.Log((float)_tickrateFixedTime);
+
             /*while (true)
             {
-                if (_clientTime <= _sessionTime)
+                if (_clientTime >= _sessionTime)
                     break;
-                yield return new WaitForSeconds((float)_tickrateFixedTime);
+                yield return new WaitForEndOfFrame();
                 _clientTime++;
+                Debug.Log("#" + _clientTime);
             }*/
             Time.timeScale = prevTime;
             _clientTime = _sessionTime;
