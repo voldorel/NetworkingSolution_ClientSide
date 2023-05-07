@@ -51,10 +51,7 @@ public class TurnBasedFighter : GameSession
 
     public void Update()
     {
-        base.NetworkUpdate();
-
-
-
+       
         if (Input.GetKeyDown(KeyCode.A))
         {
             StartCoroutine(ShowAttackAnimation(false));
@@ -71,6 +68,14 @@ public class TurnBasedFighter : GameSession
         {
             StartCoroutine(ShowHitAnimation(true));
         }
+    }
+
+
+
+    protected override void NetworkUpdate()
+    {
+        base.NetworkUpdate();
+        Debug.Log("well nice");
     }
 
     public IEnumerator ShowAttackAnimation(bool kill)

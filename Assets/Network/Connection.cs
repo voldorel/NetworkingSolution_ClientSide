@@ -50,6 +50,11 @@ namespace MyNetwork
         public delegate void SessionOutOfSync();
         public delegate void SessionSynchronizationDone();
 
+        public delegate void SessionDisconnected(); // TODO
+        public delegate void SessionConnected(); // TODO
+
+        public delegate void NetworkUpdateAction();
+
 
         public event ReceiveSessionText OnReceiveSessionText;
         public event MemberEntered OnMemberEntered;
@@ -59,6 +64,7 @@ namespace MyNetwork
         public event MatchEnd OnMatchEnd;
         public event SessionOutOfSync OnSessionOutOfSync;
         public event SessionSynchronizationDone OnSessionSyncFinish;
+        public event NetworkUpdateAction OnNetworkUpdate;
         #endregion
 
 
@@ -273,8 +279,9 @@ namespace MyNetwork
                     {
                         _sessionTime = e;
 
+
                         _clientTime++;
-                        
+                        OnNetworkUpdate?.Invoke();
                     }
                 };
 
@@ -381,17 +388,17 @@ namespace MyNetwork
                 NetEvent netEvent;
                 netEventsQueue.TryDequeue(out netEvent);
                 int netcallTime = netEvent.GetNetcallTime();
-                Debug.Log(netcallTime + " "+ _clientTime);
-                if (netcallTime > _clientTime)
+                //Debug.Log(netcallTime + " "+ _clientTime);
+                while (netcallTime > _clientTime)
                 {
                     //yield return new WaitForSeconds(fixedTimePeriod * (netcallTime - _clientTime));
-                    yield return new WaitForEndOfFrame();
-                    yield return new WaitForEndOfFrame();
-                    _clientTime += (netcallTime - _clientTime);
+                    OnNetworkUpdate?.Invoke();
+                    _clientTime++;
+                    yield return new WaitForFixedUpdate();
                 }
-                Debug.Log(netcallTime + " "+ _clientTime);
+                //Debug.Log(netcallTime + " "+ _clientTime);
                 UnityMainThreadDispatcher.Instance().Enqueue(netEvent.GetNetCallAction());
-                Debug.Log(_sessionTime + " " + _clientTime);
+                //Debug.Log(_sessionTime + " " + _clientTime);
             }
         }
 
@@ -422,17 +429,18 @@ namespace MyNetwork
             //while
             //done. enghadr bayad sari poshte timere felie server bodoe le belakhare time ha yeki beshe va liste net call jadida khali besehe
 
-            /*while (true)
+            while (true)
             {
                 if (_clientTime >= _sessionTime)
                     break;
-                yield return new WaitForEndOfFrame();
                 _clientTime++;
-                Debug.Log("#" + _clientTime);
-            }*/
+                OnNetworkUpdate?.Invoke();
+                yield return new WaitForFixedUpdate();
+                //Debug.Log("#" + _clientTime);
+            }
             Time.timeScale = prevTime;
-            _clientTime = _sessionTime;
-            Debug.Log("WE MADE IT" + _sessionTime + " " + _clientTime);
+            //_clientTime = _sessionTime;
+            Debug.Log("Game sync done" + _sessionTime + " " + _clientTime);
             IsLoadingGameSession = false;
             _missingNetEventsDownloaded = false;
             OnSessionSyncFinish?.Invoke();

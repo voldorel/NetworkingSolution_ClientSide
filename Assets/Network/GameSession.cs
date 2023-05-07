@@ -45,6 +45,9 @@ namespace MyNetwork
             Connection.Instance.OnMatchStart += (e) => MatchStartMethod(e);
             Connection.Instance.OnNetworkFunctionCall += (e) => NetworkFunctionCallMethod(e);
             Connection.Instance.OnMatchEnd += MatchEndMethod;
+            Connection.Instance.OnNetworkUpdate += () => {
+                NetworkUpdate();
+            };
             Connection.Instance.OnSessionOutOfSync += () => {
                 MessageView.ShowLoadingView(true);
             };
@@ -110,7 +113,7 @@ namespace MyNetwork
         }
 
 
-        protected void NetworkUpdate()
+        protected virtual void NetworkUpdate()
         {
 
         }
