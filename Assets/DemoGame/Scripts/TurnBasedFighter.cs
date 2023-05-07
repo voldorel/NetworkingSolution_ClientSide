@@ -19,6 +19,10 @@ public class TurnBasedFighter : GameSession
     public DamageNumberText DamageNumberTextPrefab;
 
 
+    public Text TimerText;
+    public Image TimerImage;
+    private float _gameTime;
+
 
     public Button Button1;
     public Button Button2;
@@ -40,6 +44,7 @@ public class TurnBasedFighter : GameSession
         base.OnMatchStart += response =>
         {
             Debug.Log("session start called " + response);
+            _gameTime = 0f;
         };
 
 
@@ -76,6 +81,14 @@ public class TurnBasedFighter : GameSession
     {
         base.NetworkUpdate();
         Debug.Log("well nice");
+
+        if (_gameTime <= 0f)
+        {
+            _gameTime = 120f;
+        }
+        _gameTime -= (float)base.TickrateFixedTime;
+        TimerText.text = ( (int) _gameTime).ToString();
+        TimerImage.fillAmount = (float) _gameTime / 120f;
     }
 
     public IEnumerator ShowAttackAnimation(bool kill)

@@ -26,6 +26,13 @@ namespace MyNetwork
         protected event MatchStart OnMatchStart;
         protected event MatchEnd OnMatchEnd;
 
+        public double TickrateFixedTime { 
+            get
+            {
+                return Connection.Instance.GetTickrateFixedTime();
+            }
+            private set { }
+        }
 
 
 
@@ -46,7 +53,9 @@ namespace MyNetwork
             Connection.Instance.OnNetworkFunctionCall += (e) => NetworkFunctionCallMethod(e);
             Connection.Instance.OnMatchEnd += MatchEndMethod;
             Connection.Instance.OnNetworkUpdate += () => {
-                NetworkUpdate();
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    NetworkUpdate();
+                });
             };
             Connection.Instance.OnSessionOutOfSync += () => {
                 MessageView.ShowLoadingView(true);
