@@ -22,16 +22,16 @@ namespace MyNetwork
         public delegate void ReceiveMessageAction(string text);
         public delegate void ReceiveLobbyMessageAction(string text);
         public delegate void ReceiveGameMessageAction(string text);
-        public delegate void EnterMemberAction();
-        public delegate void ExitMemberAction();
+        public delegate void ExitLobbyAction();
+        public delegate void EnterLobbyAction();
         public delegate void MatchMakingSuccessAction();
         public delegate void LoginSuccessAction(string text);
 
         public delegate void CompletionFunction();//completion action of send text
 
         public event ReceiveMessageAction OnReceiveMessage;
-        public event EnterMemberAction OnEnterLobby;
-        public event ExitMemberAction OnExitLobby;
+        public event EnterLobbyAction OnEnterLobby;
+        public event ExitLobbyAction OnExitLobby;
         public event ReceiveLobbyMessageAction OnReceiveLobbyMessage;
         public event ReceiveGameMessageAction OnReceiveGameMessage;
         public event ConnectionSuccess OnConnectionSuccess;
@@ -42,13 +42,13 @@ namespace MyNetwork
 
         #region session_actions
         public delegate void ReceiveSessionText(string text);
-        public delegate void MemberEntered();
-        public delegate void MemberLeft();
         public delegate void MatchStart(string text);
         public delegate void NetworkFunctionCallDelegate(string text);
         public delegate void MatchEnd();
         public delegate void SessionOutOfSync();
         public delegate void SessionSynchronizationDone();
+        public delegate void EnterPlayerAction(string text);
+        public delegate void ExitPlayerAction(string text);
 
         public delegate void SessionDisconnected(); // TODO
         public delegate void SessionConnected(); // TODO
@@ -57,14 +57,15 @@ namespace MyNetwork
 
 
         public event ReceiveSessionText OnReceiveSessionText;
-        public event MemberEntered OnMemberEntered;
-        public event MemberLeft OnMemberLeft;
         public event MatchStart OnMatchStart;
         public event NetworkFunctionCallDelegate OnNetworkFunctionCall;
         public event MatchEnd OnMatchEnd;
         public event SessionOutOfSync OnSessionOutOfSync;
         public event SessionSynchronizationDone OnSessionSyncFinish;
         public event NetworkUpdateAction OnNetworkUpdate;
+        public event EnterPlayerAction OnPlayerEnterSession;
+        public event ExitPlayerAction OnPlayerExitSession;
+
         #endregion
 
 
@@ -152,14 +153,21 @@ namespace MyNetwork
                             OnEnterLobby?.Invoke();
                         }
 
-                        if (requestType.Equals("SessionStart"))
+                        /*if (requestType.Equals("SessionStart"))
                         {
                             OnMatchStart?.Invoke(requestContent);
+                        }*/
+
+
+
+                        if (requestType.Equals("PlayerLeftSession"))
+                        {
+                            OnPlayerExitSession?.Invoke(requestContent);
                         }
 
-                        if (requestType.Equals("SessionEnterMember"))
+                        if (requestType.Equals("PlayerEnteredSession"))
                         {
-                            OnMemberEntered?.Invoke();
+                            OnPlayerEnterSession?.Invoke(requestContent);
                         }
 
                         if (requestType.Equals("LoginSuccess"))

@@ -14,15 +14,15 @@ namespace MyNetwork
     public class GameSession : MonoBehaviour
     {
         protected delegate void ReceiveSessionText(string text);
-        protected delegate void MemberEntered();
-        protected delegate void MemberLeft();
+        protected delegate void PlayerEntered(string text);
+        protected delegate void PlayerLeft(string text);
         protected delegate void MatchStart(string text);
         protected delegate void MatchEnd();
 
 
         protected event ReceiveSessionText OnReceiveSessionText;
-        protected event MemberEntered OnMemberEntered;
-        protected event MemberLeft OnMemberLeft;
+        protected event PlayerEntered OnPlayerEntered;
+        protected event PlayerLeft OnPlayerLeft;
         protected event MatchStart OnMatchStart;
         protected event MatchEnd OnMatchEnd;
 
@@ -47,8 +47,8 @@ namespace MyNetwork
             this.hideFlags = HideFlags.HideInInspector;
 
             Connection.Instance.OnReceiveSessionText += (e) => ReceiveSessionTextMethod(e);
-            Connection.Instance.OnMemberEntered += MemberEnteredMethod;
-            Connection.Instance.OnMemberLeft += MemberLeftMethod;
+            Connection.Instance.OnPlayerEnterSession += (e) => PlayerEnteredMethod(e);
+            Connection.Instance.OnPlayerExitSession += (e) => PlayerLeftMethod(e);
             Connection.Instance.OnMatchStart += (e) => MatchStartMethod(e);
             Connection.Instance.OnNetworkFunctionCall += (e) => NetworkFunctionCallMethod(e);
             Connection.Instance.OnMatchEnd += MatchEndMethod;
@@ -72,14 +72,14 @@ namespace MyNetwork
             OnReceiveSessionText?.Invoke(sessionMessage);
         }
 
-        private void MemberEnteredMethod()
+        private void PlayerEnteredMethod(string userId)
         {
-            OnMemberEntered?.Invoke();
+            OnPlayerEntered?.Invoke(userId);
         }
 
-        private void MemberLeftMethod()
+        private void PlayerLeftMethod(string userId)
         {
-            OnMemberLeft?.Invoke();
+            OnPlayerLeft?.Invoke(userId);
         }
 
         private void MatchStartMethod(string args)

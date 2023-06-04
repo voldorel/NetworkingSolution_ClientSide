@@ -37,7 +37,8 @@ public class TurnBasedFighter : GameSession
     private void Start()
     {
         base.InitGameSession();
-
+        base.OnPlayerEntered += TurnBasedFighter_OnPlayerEntered;
+        base.OnPlayerLeft += TurnBasedFighter_OnPlayerLeft;
 
 
 
@@ -52,7 +53,17 @@ public class TurnBasedFighter : GameSession
 
     }
 
-    
+    private void TurnBasedFighter_OnPlayerLeft(string userId)
+    {
+        Debug.Log(userId);
+    }
+
+    private void TurnBasedFighter_OnPlayerEntered(string userId)
+    {
+        Debug.Log(userId);
+    }
+
+
 
     public void Update()
     {
@@ -80,7 +91,7 @@ public class TurnBasedFighter : GameSession
     protected override void NetworkUpdate()
     {
         base.NetworkUpdate();
-        Debug.Log("well nice");
+        //Debug.Log("well nice");
 
         if (_gameTime <= 0f)
         {
