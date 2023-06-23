@@ -337,6 +337,11 @@ namespace MyNetwork
             }
         }
 
+        private async void OnApplicationQuit ()
+        {
+            if (WebSocket.State == WebSocketState.Open)
+                await WebSocket.Close();
+        }
 
 
         public void Update()
