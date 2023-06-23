@@ -337,6 +337,17 @@ namespace MyNetwork
             }
         }
 
+        private async void OnApplicationQuit ()
+        {
+            if (WebSocket.State == WebSocketState.Open)
+                await WebSocket.Close();
+        }
+
+        private async void OnDestroy()
+        {
+            if (WebSocket.State == WebSocketState.Open)
+                await WebSocket.Close();
+        }
 
 
         public void Update()
@@ -386,15 +397,6 @@ namespace MyNetwork
         }
         
         
-        private async void OnApplicationQuit()
-        {
-            try
-            {
-                if (WebSocket != null)
-                    await WebSocket.Close();
-            }
-            catch (Exception ex) { Debug.LogException(ex); }
-        }
 
         public async Task SendText(string text, string request)
         {
