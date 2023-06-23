@@ -430,7 +430,7 @@ namespace MyNetwork
 
 
 
-        private IEnumerator ProcessNetCallQueue(ConcurrentQueue<NetEvent> netEventsQueue)
+        private IEnumerator ProcessEventQueue(ConcurrentQueue<NetEvent> netEventsQueue)
         {
             float fixedTimePeriod = (float)_tickrateFixedTime;
             while (netEventsQueue.Count > 0)
@@ -471,11 +471,11 @@ namespace MyNetwork
 
             Time.timeScale = 100;
             //start synching while listerning to new events
-            yield return ProcessNetCallQueue(_netCallPreSyncQueue);
+            yield return ProcessEventQueue(_netCallPreSyncQueue);
             //yield return new WaitForSeconds(1double / server tick rate); // this value meaning 1 / tickrate should come from the srver itself
             //done. time is set to entrance time which is lower than current time.
             //now that we're cought up with the previous events let's start catching up to current events
-            yield return ProcessNetCallQueue(_liveEventQueue);
+            yield return ProcessEventQueue(_liveEventQueue);
             //while
             //done. enghadr bayad sari poshte timere felie server bodoe le belakhare time ha yeki beshe va liste net call jadida khali besehe
 
