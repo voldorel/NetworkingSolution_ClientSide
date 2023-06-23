@@ -76,7 +76,7 @@ namespace MyNetwork
         private bool _missingNetEventsDownloaded;
         internal bool IsLoadingGameSession { get; private set; }
         private static readonly ConcurrentQueue<NetEvent> _netCallPreSyncQueue = new ConcurrentQueue<NetEvent>();
-        private static readonly ConcurrentQueue<NetEvent> _netCallQueue = new ConcurrentQueue<NetEvent>();
+        private static readonly ConcurrentQueue<NetEvent> _liveEventQueue = new ConcurrentQueue<NetEvent>();
         private class NetEvent
         {
             private Action _netCallAction;
@@ -162,12 +162,24 @@ namespace MyNetwork
 
                         if (requestType.Equals("PlayerLeftSession"))
                         {
-                            OnPlayerExitSession?.Invoke(requestContent);
+                            lock (_liveEventQueue)
+                            {
+                                NetEvent netEvent = new NetEvent(() => {
+                                    OnPlayerExitSession?.Invoke(requestContent);
+                                }, _sessionTime);
+                                _liveEventQueue.Enqueue(netEvent);
+                            }
                         }
 
                         if (requestType.Equals("PlayerEnteredSession"))
                         {
-                            OnPlayerEnterSession?.Invoke(requestContent);
+                            lock (_liveEventQueue)
+                            {
+                                NetEvent netEvent = new NetEvent(() => {
+                                    OnPlayerEnterSession?.Invoke(requestContent);
+                                }, _sessionTime);
+                                _liveEventQueue.Enqueue(netEvent);
+                            }
                         }
 
                         if (requestType.Equals("LoginSuccess"))
@@ -190,13 +202,13 @@ namespace MyNetwork
                             try
                             {
                                 int sessionTime = _sessionTime;
-                                lock (_netCallQueue)
+                                lock (_liveEventQueue)
                                 {
                                     NetEvent netEvent = new NetEvent(() => {
                                         JToken netCallToken = WebSocket.FromBson<JToken>(requestContent);
                                         OnNetworkFunctionCall?.Invoke((string)netCallToken["Content"]);
                                     }, sessionTime);
-                                    _netCallQueue.Enqueue(netEvent);
+                                    _liveEventQueue.Enqueue(netEvent);
                                 }
                             }
                             catch (System.Exception ex)
@@ -205,20 +217,43 @@ namespace MyNetwork
                             }
                         }
 
-                        if (requestType.Equals("PreSyncNetworkFunctionCall"))
-                        {
+                        if (requestType.StartsWith("PreSync")) {
                             try
                             {
                                 JObject keyValuePairs = JObject.Parse(requestContent);
                                 int eventTime = (int)keyValuePairs["eventTime"];
-                                lock (_netCallPreSyncQueue)
+                                if (requestType.Equals("PreSyncNetworkFunctionCall"))
                                 {
-                                    NetEvent netEvent = new NetEvent(() => {
-                                        string eventBody = (string)keyValuePairs["eventBody"];
-                                        JToken netCallToken = WebSocket.FromBson<JToken>(eventBody);
-                                        OnNetworkFunctionCall?.Invoke((string)netCallToken["Content"]);
-                                    }, eventTime);
-                                    _netCallPreSyncQueue.Enqueue(netEvent);
+                                    lock (_netCallPreSyncQueue)
+                                    {
+                                        NetEvent netEvent = new NetEvent(() => {
+                                            string eventBody = (string)keyValuePairs["eventBody"];
+                                            JToken netCallToken = WebSocket.FromBson<JToken>(eventBody);
+                                            OnNetworkFunctionCall?.Invoke((string)netCallToken["Content"]);
+                                        }, eventTime);
+                                        _netCallPreSyncQueue.Enqueue(netEvent);
+                                    }
+                                } else if (requestType.Equals("PreSyncPlayerEntered"))
+                                {
+                                    lock (_netCallPreSyncQueue)
+                                    {
+                                        NetEvent netEvent = new NetEvent(() => {
+                                            string eventBodyContent = GetContentFromBody((string)keyValuePairs["eventBody"]);
+                                            OnPlayerEnterSession?.Invoke(eventBodyContent);
+                                        }, eventTime);
+                                        _netCallPreSyncQueue.Enqueue(netEvent);
+                                    }
+                                }
+                                else if (requestType.Equals("PreSyncPlayerLeft"))
+                                {
+                                    lock (_netCallPreSyncQueue)
+                                    {
+                                        NetEvent netEvent = new NetEvent(() => {
+                                            string eventBodyContent = GetContentFromBody((string)keyValuePairs["eventBody"]);
+                                            OnPlayerExitSession?.Invoke(eventBodyContent);
+                                        }, eventTime);
+                                        _netCallPreSyncQueue.Enqueue(netEvent);
+                                    }
                                 }
                             }
                             catch (System.Exception ex)
@@ -310,10 +345,10 @@ namespace MyNetwork
             {
                 if (!IsLoadingGameSession)
                 {
-                    while (_netCallQueue.Count > 0)
+                    while (_liveEventQueue.Count > 0)
                     {
                         NetEvent netEvent;
-                        _netCallQueue.TryDequeue(out netEvent);
+                        _liveEventQueue.TryDequeue(out netEvent);
                         UnityMainThreadDispatcher.Instance().Enqueue(netEvent.GetNetCallAction());
                     }
                 }
@@ -321,6 +356,13 @@ namespace MyNetwork
             {
                 Debug.LogError("Critical error when syncing game " + ex);
             }
+        }
+
+        private string GetContentFromBody(string eventBody)
+        {
+            JObject eventBodyJToken = JObject.Parse(eventBody);
+            string eventBodyContent = (string)eventBodyJToken["Content"];
+            return eventBodyContent;
         }
 
         internal double GetTickrateFixedTime()
@@ -433,7 +475,7 @@ namespace MyNetwork
             //yield return new WaitForSeconds(1double / server tick rate); // this value meaning 1 / tickrate should come from the srver itself
             //done. time is set to entrance time which is lower than current time.
             //now that we're cought up with the previous events let's start catching up to current events
-            yield return ProcessNetCallQueue(_netCallQueue);
+            yield return ProcessNetCallQueue(_liveEventQueue);
             //while
             //done. enghadr bayad sari poshte timere felie server bodoe le belakhare time ha yeki beshe va liste net call jadida khali besehe
 

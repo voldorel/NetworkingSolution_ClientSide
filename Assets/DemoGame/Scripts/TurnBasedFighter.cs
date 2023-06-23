@@ -55,12 +55,12 @@ public class TurnBasedFighter : GameSession
 
     private void TurnBasedFighter_OnPlayerLeft(string userId)
     {
-        Debug.Log(userId);
+        Debug.Log(userId + " left the game");
     }
 
     private void TurnBasedFighter_OnPlayerEntered(string userId)
     {
-        Debug.Log(userId);
+        Debug.Log(userId + " entered the game");
     }
 
 
@@ -91,7 +91,6 @@ public class TurnBasedFighter : GameSession
     protected override void NetworkUpdate()
     {
         base.NetworkUpdate();
-        //Debug.Log("well nice");
 
         if (_gameTime <= 0f)
         {
