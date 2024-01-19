@@ -312,7 +312,8 @@ namespace MyNetwork
                             {
                                 JObject keyValuePairs = new JObject();
                                 keyValuePairs.Add("startingTime", _clientTime);
-                                keyValuePairs.Add("endingTime", _sessionTime);
+                                //keyValuePairs.Add("endingTime", _sessionTime); changed this to e at Jan 2024
+                                keyValuePairs.Add("endingTime", e);
                                 await SendText(keyValuePairs.ToString(), "SynchronizaionRequest");
                             });
                         });
