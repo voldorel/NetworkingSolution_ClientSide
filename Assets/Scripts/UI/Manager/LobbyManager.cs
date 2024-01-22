@@ -157,7 +157,8 @@ public class LobbyManager : MonoBehaviour
     public void OnClickConnectToServer()
     {
         MessageView.ShowLoadingView(true);
-        Connection.Instance.ConnectToServer("localhost", "5000");
+        Connection.Instance.StartDreamNet();
+        //Connection.Instance.DoConnectToServer("localhost:5000");
         //Connection.Instance.ConnectToServer(_serverAddressInput.text, _serverAddressPortInput.text);
     }
 

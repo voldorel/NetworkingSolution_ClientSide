@@ -123,11 +123,17 @@ namespace DreamNet
         }
 
 
-        public void ConnectToServer(string remoteAddress, string remoteIP)
+        public void StartDreamNet()
+        {
+            string serverAddress = DreamNetwork.DreamNetworkInstance.GetServerAddress();
+            DoConnectToServer(serverAddress);
+        }
+
+        public void DoConnectToServer(string remoteAddress)
         {
             try
             {
-                WebSocket = new WebSocket("ws://" + remoteAddress + ":" + remoteIP + "/ws");
+                WebSocket = new WebSocket("ws://" + remoteAddress + "/ws");
                 
                 WebSocket.OnMessage += (e) =>
                 {

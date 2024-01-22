@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using DreamNet.Config;
 using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
 
 
 namespace DreamNet
 {
     //[RequireComponent(typeof(DreamNet.Connection))]
     //[RequireComponent(typeof(UnityMainThreadDispatcher))]
+    
     [AddComponentMenu("DreamByte/" + nameof(DreamNet.DreamNetwork))]
     [Serializable]
     public class DreamNetwork : MonoBehaviour
@@ -33,13 +36,9 @@ namespace DreamNet
             } 
             try
             {
-                string[] matchingAssets = AssetDatabase.FindAssets("DreamNetConfig", new string[] { "Assets/DreamNet/Config" });
-                foreach (var asset in matchingAssets)
-                {
-                    var configPath = AssetDatabase.GUIDToAssetPath(asset);
-                    DreamNetConfig dreamConfig = AssetDatabase.LoadAssetAtPath(configPath, typeof(DreamNetConfig)) as DreamNetConfig;
-                    _dreamNetConfig = dreamConfig;
-                }
+                string assetPath = "Assets/DreamNet/Config/DreamNetConfig.asset";
+                DreamNetConfig dreamNetConfig = AssetDatabase.LoadAssetAtPath<DreamNetConfig>(assetPath) as DreamNetConfig;
+                _dreamNetConfig = dreamNetConfig;
             }
             catch (Exception e)
             {
@@ -48,6 +47,28 @@ namespace DreamNet
             }
             
         }
+
+        internal string GetServerAddress()
+        {
+            return _dreamNetConfig.ServerAddress;
+        }
+        
+        
+        
+        
+        public void SayHello()
+        {
+            var toolbar = new ToolbarMenu();
+            toolbar.text = "NONE";                   //this is displayed as a label on top of VisualElement
+ 
+            //these create options in a dropdown menu embedded in the toolbar and assign functionality to them
+        }
+
+        public static void Sasa(DropdownMenuAction dropdownMenuAction)
+        {
+            Debug.Log("asdasd");
+        }
+        
     }
 }
 
