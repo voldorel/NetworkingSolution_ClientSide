@@ -9,7 +9,7 @@ using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 
-namespace MyNetwork
+namespace DreamNet
 {
     public class GameSession : MonoBehaviour
     {
@@ -18,6 +18,8 @@ namespace MyNetwork
         protected delegate void PlayerLeft(string text);
         protected delegate void MatchStart(string text);
         protected delegate void MatchEnd();
+        protected delegate void GameOutOfSync();
+        protected delegate void GameResyncDone();
 
 
         protected event ReceiveSessionText OnReceiveSessionText;
@@ -25,6 +27,9 @@ namespace MyNetwork
         protected event PlayerLeft OnPlayerLeft;
         protected event MatchStart OnMatchStart;
         protected event MatchEnd OnMatchEnd;
+        protected event GameOutOfSync OnGameOutOfSync;
+        protected event GameResyncDone OnGameResyncDone;
+
 
         public double TickrateFixedTime { 
             get
@@ -57,11 +62,12 @@ namespace MyNetwork
                     NetworkUpdate();
                 });
             };
-            Connection.Instance.OnSessionOutOfSync += () => {
-                MessageView.ShowLoadingView(true);
+            Connection.Instance.OnSessionOutOfSync += () =>
+            {
+                OnGameOutOfSync?.Invoke();
             };
             Connection.Instance.OnSessionSyncFinish += () => {
-                MessageView.ShowLoadingView(false);
+                OnGameResyncDone?.Invoke();
             };
 
 
@@ -185,11 +191,6 @@ namespace MyNetwork
             await Connection.Instance.SendText(keyValuePairs.ToString(), "NetworkFunctionCall");
         }
 
-
-        protected void SynchronizeGame()
-        {
-            //StartCoroutine(SynchronizeCoroutine());
-        }
 
         
     }

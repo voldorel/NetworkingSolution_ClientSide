@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using MyNetwork;
+using DreamNet;
 
 public class LobbyManager : MonoBehaviour
 {

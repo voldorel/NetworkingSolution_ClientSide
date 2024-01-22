@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json.Linq;
-using MyNetwork;
+using DreamNet;
 
 public class TurnBasedFighter : GameSession
 {
@@ -39,8 +39,14 @@ public class TurnBasedFighter : GameSession
         base.InitGameSession();
         base.OnPlayerEntered += TurnBasedFighter_OnPlayerEntered;
         base.OnPlayerLeft += TurnBasedFighter_OnPlayerLeft;
-
-
+        base.OnGameOutOfSync += () =>
+        {
+            MessageView.ShowLoadingView(true);
+        };
+        base.OnGameResyncDone += () =>
+        {
+            MessageView.ShowLoadingView(false);
+        };
 
         base.OnMatchStart += response =>
         {

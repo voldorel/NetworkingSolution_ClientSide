@@ -7,7 +7,7 @@ using System.Linq;
 using System;
 using Newtonsoft.Json.Linq;
 
-namespace MyNetwork
+namespace DreamNet
 {
     public class GameLobby : MonoBehaviour
     {
@@ -76,7 +76,7 @@ namespace MyNetwork
             try
             {
                 await Connection.Instance.SendText(newUsername, "UserLogin");
-                MessageView.ShowLoadingView(true);
+                //MessageView.ShowLoadingView(true);
                 Connection.Instance.SetUsername(newUsername);
             }
             catch

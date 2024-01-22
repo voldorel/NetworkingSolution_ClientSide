@@ -9,7 +9,7 @@ using System.Linq;
 using System;
 using Newtonsoft.Json.Linq;
 
-namespace MyNetwork
+namespace DreamNet
 {
     public sealed class Connection : MonoBehaviour
     {
