@@ -176,7 +176,8 @@ public class LobbyManager : MonoBehaviour
         else
             MessageView.ShowMessage("نام وارد شده باید حداقل سه حرفی باشد!");
     }
-
+    
+    
 
 
     public void OnClickSendLobbyMessage()

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DreamNet.Config;
+using DreamNet.Utils;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -45,29 +46,29 @@ namespace DreamNet
                 Debug.LogError("Dream config not found.");
                 throw;
             }
-            
+
+            try
+            {
+
+            }
+            catch
+            {
+                Debug.LogError("Connection failed!");
+            }
         }
 
+        internal static string GetServerUrl()
+        {
+            string assetPath = "Assets/DreamNet/Config/DreamNetConfig.asset";
+            DreamNetConfig dreamNetConfig = AssetDatabase.LoadAssetAtPath<DreamNetConfig>(assetPath) as DreamNetConfig;
+            return "http://" + dreamNetConfig.ServerAddress;
+        }
+        
         internal string GetServerAddress()
         {
             return _dreamNetConfig.ServerAddress;
         }
-        
-        
-        
-        
-        public void SayHello()
-        {
-            var toolbar = new ToolbarMenu();
-            toolbar.text = "NONE";                   //this is displayed as a label on top of VisualElement
- 
-            //these create options in a dropdown menu embedded in the toolbar and assign functionality to them
-        }
 
-        public static void Sasa(DropdownMenuAction dropdownMenuAction)
-        {
-            Debug.Log("asdasd");
-        }
         
     }
 }

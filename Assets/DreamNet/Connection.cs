@@ -1,12 +1,12 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using NativeWebSocket;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using DreamNet.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace DreamNet
@@ -17,6 +17,7 @@ namespace DreamNet
 
         public WebSocket WebSocket;
         #region lobby_actions
+        public delegate void InitialLoading();
         public delegate void ConnectionSuccess();
         public delegate void ConnectionFailure();
         public delegate void ReceiveMessageAction(string text);
@@ -29,13 +30,14 @@ namespace DreamNet
 
         public delegate void CompletionFunction();//completion action of send text
 
+        public event InitialLoading OnInitialLoading;
         public event ReceiveMessageAction OnReceiveMessage;
         public event EnterLobbyAction OnEnterLobby;
         public event ExitLobbyAction OnExitLobby;
         public event ReceiveLobbyMessageAction OnReceiveLobbyMessage;
         public event ReceiveGameMessageAction OnReceiveGameMessage;
         public event ConnectionSuccess OnConnectionSuccess;
-        public event ConnectionSuccess OnConnectionFailure;
+        public event ConnectionFailure OnConnectionFailure;
         public event MatchMakingSuccessAction OnMatchMakingSuccess;
         public event LoginSuccessAction OnLoginSuccessAction;
         #endregion
@@ -77,6 +79,7 @@ namespace DreamNet
         internal bool IsLoadingGameSession { get; private set; }
         private static readonly ConcurrentQueue<NetEvent> _netCallPreSyncQueue = new ConcurrentQueue<NetEvent>();
         private static readonly ConcurrentQueue<NetEvent> _liveEventQueue = new ConcurrentQueue<NetEvent>();
+        #endregion
         private class NetEvent
         {
             private Action _netCallAction;
@@ -95,7 +98,6 @@ namespace DreamNet
                 return _netcallTime;
             }
         }
-        #endregion
 
 
 
@@ -122,19 +124,87 @@ namespace DreamNet
             _missingNetEventsDownloaded = false;
         }
 
-
-        public void StartDreamNet()
-        {
-            string serverAddress = DreamNetwork.DreamNetworkInstance.GetServerAddress();
-            DoConnectToServer(serverAddress);
-        }
-
-        public void DoConnectToServer(string remoteAddress)
+        public async void DoLogin(string newUsername)
         {
             try
             {
-                WebSocket = new WebSocket("ws://" + remoteAddress + "/ws");
+                await Connection.Instance.SendText(newUsername, "UserLogin");
+            }
+            catch
+            {
+                Debug.LogError("Login Failed");
+            }
+        }
+        
+        
+        private string GetDreamToken()
+        {
+            string token = DreamUtils.DoLoadStoredData("DTKN"); //DTKN = "dream token". wrote it in acronyms for safety
+            return token;
+        }
+        
+        private void SetDreamToken(string token)
+        {
+            DreamUtils.StoreData("DTKN", token);
+        }
+        
+        private IEnumerator TrySignIn()
+        {
+            string token = GetDreamToken();
+            if (token.Equals("NONE"))
+            {
+                yield return DreamUtils.Register((e) =>
+                {
+                    try
+                    {
+                        //SetDreamToken((string)e["token"]);
+                    }
+                    catch
+                    {
+                        //Debug.LogError("Error when parsing user data");
+                        OnConnectionFailure?.Invoke();
+                    }
+                    JObject jsonData = JObject.Parse(e.ToString());
+                    
+                }, (e) =>
+                {
+                    OnConnectionFailure?.Invoke();
+                    //Debug.LogError(e);
+                });
                 
+            }
+
+            //DoLogin(token);
+            //DoConnectToServer(DreamNetwork.GetServerUrl(), token);
+            DoConnectToServer("localhost:5000", token);
+        }
+        
+        /// <summary>
+        /// Called at startup of the game to initialize DreamNet
+        /// and load player data through websocket connection
+        ///---------------------------------------------------
+        /// Authors: Mehdi Parvan - Taha Gharanfoli
+        /// </summary>
+        public void StartDreamNet()
+        {
+            try
+            {
+                OnInitialLoading?.Invoke();
+                StartCoroutine(TrySignIn());
+            }
+            catch
+            {
+                OnConnectionFailure?.Invoke();
+            }
+        }
+
+        public void DoConnectToServer(string remoteAddress, string token)
+        {
+            try
+            {
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                headers["Authorization"] = token;
+                WebSocket = new WebSocket("ws://" + remoteAddress + "/ws", headers);
                 WebSocket.OnMessage += (e) =>
                 {
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -346,14 +416,20 @@ namespace DreamNet
 
         private async void OnApplicationQuit ()
         {
-            if (WebSocket.State == WebSocketState.Open)
-                await WebSocket.Close();
+            if (WebSocket != null)
+            {
+                if (WebSocket.State == WebSocketState.Open)
+                    await WebSocket.Close();
+            }
         }
 
         private async void OnDestroy()
         {
-            if (WebSocket.State == WebSocketState.Open)
-                await WebSocket.Close();
+            if (WebSocket != null)
+            {
+                if (WebSocket.State == WebSocketState.Open)
+                    await WebSocket.Close();
+            }
         }
 
 
