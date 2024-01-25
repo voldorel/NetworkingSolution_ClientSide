@@ -42,7 +42,7 @@ namespace DreamNet
         public async void SendLobbyText(string text)
         {
             JObject keyValuePairs = new JObject();
-            keyValuePairs.Add("username", GetUsername());
+            keyValuePairs.Add("UserId", GetUsername());
             keyValuePairs.Add("messageText", text);
             await Connection.Instance.SendText(keyValuePairs.ToString(), "LobbyMessage");
         }

@@ -54,7 +54,7 @@ public class LobbyManager : MonoBehaviour
         _serverLoginObject.SetActive(true);
 
         _verifyNameButton.interactable = true;
-        _joinGameButton.interactable = false;
+        _joinGameButton.interactable = true;
     }
 
     
@@ -116,7 +116,7 @@ public class LobbyManager : MonoBehaviour
     {
         JObject keyValuePairs = new JObject();
         keyValuePairs = JObject.Parse(text);
-        string senderName = (string)keyValuePairs["username"];
+        string senderName = (string)keyValuePairs["UserId"];
         string lobbyMessage = (string)keyValuePairs["messageText"];
 
         if (senderName.Equals(_gameLobby.GetUsername()))

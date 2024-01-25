@@ -137,27 +137,22 @@ namespace DreamNet
         }
         
         
-        private string GetDreamToken()
-        {
-            string token = DreamUtils.DoLoadStoredData("DTKN"); //DTKN = "dream token". wrote it in acronyms for safety
-            return token;
-        }
         
-        private void SetDreamToken(string token)
-        {
-            DreamUtils.StoreData("DTKN", token);
-        }
+        
+        
         
         private IEnumerator TrySignIn()
         {
-            string token = GetDreamToken();
+            string token = DreamUtils.GetDreamToken();
             if (token.Equals("NONE"))
             {
                 yield return DreamUtils.Register((e) =>
                 {
                     try
                     {
-                        //SetDreamToken((string)e["token"]);
+                        token = (string)e["token"];
+                        DreamUtils.SetDreamToken((string)e["token"]);
+                        
                     }
                     catch
                     {

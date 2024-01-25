@@ -18,10 +18,22 @@ namespace DreamNet
     [Serializable]
     public class DreamNetwork : MonoBehaviour
     {
+
+        [DreamByteDisclaimer] public string CopyWrite = "DreamNet is developed by Mehdi Parvan & Taha Gharanfoli";
+        [DreamByteDisclaimer] public string CopyWrite1 = "*important* Simply include DreamNet in your game and Call";
+        [DreamByteDisclaimer] public string CopyWrite2 = "StartDreamServer() from the singleton instance";
+        [DreamByteDisclaimer] public string CopyWrite3 = "in order to initiate the connection";
+        [DreamByteDisclaimer] public string CopyWrite4 = "\n";
+        [DreamByteDisclaimer] public string CopyWrite5 = "DreamByte© 2024";
+        
+        
         private DreamNetConfig _dreamNetConfig;
         public static DreamNetwork DreamNetworkInstance;
         internal Connection DreamConnection{ get; private set; }
         internal UnityMainThreadDispatcher MainThreadDispatcher { get; private set; }
+        
+        
+        
         private void Awake()
         {
             if (DreamNetwork.DreamNetworkInstance == null)
@@ -69,7 +81,10 @@ namespace DreamNet
             return _dreamNetConfig.ServerAddress;
         }
 
-        
+        public void StartDreamServer()
+        {
+            DreamConnection.StartDreamNet();
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -42,7 +43,7 @@ namespace DreamNet.Utils
             yield return webRequest.SendWebRequest();
             if (webRequest.isNetworkError)
             {
-                Debug.Log("Error While Sending: " + webRequest.error + url + $"/{address}");
+                Debug.Log( webRequest.error + url + $"/{address}");
                 onFail?.Invoke(webRequest.error);
             }
             else
@@ -55,6 +56,28 @@ namespace DreamNet.Utils
 
             }
         }
+        
+        internal static void SetDreamToken(string token)
+        {
+            StoreData("DTKN", token);
+        }
+        
+        internal static void DeleteDreamToken()
+        {
+            if (PlayerPrefs.HasKey("DTKN"))
+            {
+                PlayerPrefs.DeleteKey("DTKN");
+                PlayerPrefs.Save();
+            }
+        }
+        
+        
+        internal static string GetDreamToken()
+        {
+            string token = DoLoadStoredData("DTKN"); //DTKN = "dream token". wrote it in acronyms for safety
+            return token;
+        }
+        
         private static IEnumerator MakeGetRequest(string address,Action<JToken> onSuccessFull,Action<string> onFail)
         {
             string url = DreamNetwork.GetServerUrl();
@@ -91,6 +114,29 @@ namespace DreamNet.Utils
         {
             Status = (ResultStatus)status;
             Value =  value;
+        }
+    }
+    
+    public class DreamByteDisclaimerAttribute : PropertyAttribute
+    {
+    }
+    
+    [CustomPropertyDrawer(typeof(DreamByteDisclaimerAttribute))]
+    public class ShowOnlyDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label)
+        {
+            GUIStyle myStyle = new GUIStyle();
+
+            myStyle.fontSize = 10;
+            myStyle.alignment = TextAnchor.UpperLeft;
+            myStyle.padding.top = 5;
+            myStyle.padding.left = -3;
+            myStyle.fontStyle = FontStyle.Bold;
+            myStyle.overflow.bottom = 20;
+            EditorGUI.DrawRect(new Rect(position.x-11, position.y, position.width+11, position.height + 6), Color.gray);
+            Rect r = GUILayoutUtility.GetLastRect();
+            EditorGUI.LabelField(r, prop.stringValue, myStyle);
         }
     }
 }
