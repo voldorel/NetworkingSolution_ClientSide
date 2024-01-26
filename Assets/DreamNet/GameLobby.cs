@@ -9,7 +9,7 @@ namespace DreamNet
         public delegate void ReceiveMessageAction(string text);
         public delegate void EnterMemberAction();
         public delegate void ExitMemberAction();
-        public delegate void MatchMakingSuccess();
+        public delegate void MatchMakingSuccess(string matchData);
         public delegate void ConnectionSuccess();
         public delegate void ConnectionFailure();
         public delegate void LoginSuccess(string text);
@@ -42,7 +42,8 @@ namespace DreamNet
         public async void SendLobbyText(string text)
         {
             JObject keyValuePairs = new JObject();
-            keyValuePairs.Add("UserId", GetUsername());
+
+            keyValuePairs.Add("UserId", GetUserId());
             keyValuePairs.Add("messageText", text);
             await Connection.Instance.SendText(keyValuePairs.ToString(), "LobbyMessage");
         }
@@ -57,7 +58,7 @@ namespace DreamNet
             try
             {
                 await Connection.Instance.SendText(newUsername, "UsernameRegister");
-                Connection.Instance.SetUsername(newUsername);
+                Connection.Instance.SetUserId(newUsername);
             }
             catch
             {
@@ -71,7 +72,7 @@ namespace DreamNet
             {
                 await Connection.Instance.SendText(newUsername, "UserLogin");
                 //MessageView.ShowLoadingView(true);
-                Connection.Instance.SetUsername(newUsername);
+                Connection.Instance.SetUserId(newUsername);
             }
             catch
             {
@@ -113,9 +114,9 @@ namespace DreamNet
         }
 
 
-        private void MatchMakingSuccessMethod()
+        private void MatchMakingSuccessMethod(string matchData)
         {
-            OnMatchMakingSuccess?.Invoke();
+            OnMatchMakingSuccess?.Invoke(matchData);
         }
 
         private void ConnectionFailureMethod()
@@ -129,9 +130,9 @@ namespace DreamNet
         }
 
 
-        public string GetUsername()
+        public string GetUserId()
         {
-            return Connection.Instance.GetUsername();
+            return Connection.Instance.GetUserId();
         }
 
     }

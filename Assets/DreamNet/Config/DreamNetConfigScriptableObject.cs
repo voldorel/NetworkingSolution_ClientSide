@@ -9,7 +9,7 @@ namespace DreamNet.Config
     //[CreateAssetMenu(fileName = "DreamNetConfig", menuName = "DreamByte/DreamConfigScriptableObject", order = 1)]
     public class DreamNetConfig : ScriptableObject
     {
-        internal string ServerAddress;
+        public string ServerAddress;
         [TextArea(2, 2)] public string LoginToken;
 
         public void DoClearLoginToken()

@@ -43,7 +43,7 @@ public class LobbyManager : MonoBehaviour
     {
         _gameLobby = gameObject.AddComponent<GameLobby>();
         _gameLobby.OnReceiveLobbyMessage += (e) => OnReceiveLobbyText(e);
-        _gameLobby.OnMatchMakingSuccess += () => OnMatchMakingSuccess();
+        _gameLobby.OnMatchMakingSuccess += (e) => OnMatchMakingSuccess(e);
         _gameLobby.OnConnectionSuccess += () => OnConnectionSuccess();
         _gameLobby.OnConnectionFailure += () => OnConnectionFailure();
         _gameLobby.OnEnterLobby += () => OnEnterLobby();
@@ -100,14 +100,16 @@ public class LobbyManager : MonoBehaviour
         {
             MessageView.ShowLoadingView(false);
             JObject keyValuePairs = JObject.Parse(text);
+            Connection.Instance.SetUserId((string)keyValuePairs["UserId"]);
             if ((bool)keyValuePairs["IsInGameSession"])
             {
+                /////Debug.Log((string)keyValuePairs["matchData"]); // TODO needs a function to parse member list
                 SceneManager.LoadScene("GameScene");
             }
         }
         catch (System.Exception ex)
         {
-            Debug.LogException(ex);
+            Debug.LogError("User Initialization failed");
         }
 
     }
@@ -116,16 +118,17 @@ public class LobbyManager : MonoBehaviour
     {
         JObject keyValuePairs = new JObject();
         keyValuePairs = JObject.Parse(text);
-        string senderName = (string)keyValuePairs["UserId"];
+
+        string senderId = (string)keyValuePairs["UserId"];
         string lobbyMessage = (string)keyValuePairs["messageText"];
 
-        if (senderName.Equals(_gameLobby.GetUsername()))
+        if (senderId.Equals(_gameLobby.GetUserId()))
         {
             LobbyMessageManager.CreateSelfMessage(lobbyMessage);
         }
         else
         {
-            LobbyMessageManager.CreateOtherMessage(lobbyMessage, senderName);
+            LobbyMessageManager.CreateOtherMessage(lobbyMessage, senderId);
         }
     }
 
@@ -142,8 +145,9 @@ public class LobbyManager : MonoBehaviour
     }
 
 
-    public void OnMatchMakingSuccess()
+    public void OnMatchMakingSuccess(string matchData)
     {
+        //Debug.Log("match data is " + matchData); // TODO needs a function to parse member list
         SceneManager.LoadScene("GameScene");
     }
 
@@ -212,7 +216,7 @@ public class LobbyManager : MonoBehaviour
     public void OnEnterLobby()
     {
         _nameSelectionPage.SetActive(false);
-        LobbyMessageManager.CreateEntranceMessage(_gameLobby.GetUsername()); 
+        LobbyMessageManager.CreateEntranceMessage(_gameLobby.GetUserId()); 
     }
     
 

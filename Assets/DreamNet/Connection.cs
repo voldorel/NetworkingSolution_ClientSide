@@ -13,7 +13,8 @@ namespace DreamNet
 {
     public sealed class Connection : MonoBehaviour
     {
-        private string _username;//this should change to an object of a class with its own seprate file in the namespace
+        private string _userId;//this should change to an object of a class with its own seprate file in the namespace
+        
 
         public WebSocket WebSocket;
         #region lobby_actions
@@ -25,7 +26,7 @@ namespace DreamNet
         public delegate void ReceiveGameMessageAction(string text);
         public delegate void ExitLobbyAction();
         public delegate void EnterLobbyAction();
-        public delegate void MatchMakingSuccessAction();
+        public delegate void MatchMakingSuccessAction(string matchData);
         public delegate void LoginSuccessAction(string text);
 
         public delegate void CompletionFunction();//completion action of send text
@@ -217,7 +218,7 @@ namespace DreamNet
                         if (requestType.Equals("MatchMakingSuccess"))
                         {
                             ResetSessionConfig();
-                            OnMatchMakingSuccess?.Invoke();
+                            OnMatchMakingSuccess?.Invoke(requestContent);
                         }
                         if (requestType.Equals("LobbyJoined"))
                         {
@@ -464,14 +465,14 @@ namespace DreamNet
             var message = System.Text.Encoding.UTF8.GetString(bytes);
         }
 
-        public string GetUsername()
+        public string GetUserId()
         {
-            return _username;
+            return _userId;
         }
 
-        public void SetUsername(string username)
+        public void SetUserId(string userId)
         {
-            _username = username;
+            _userId = userId;
         }
         
         

@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: DreamNetConfig
   m_EditorClassIdentifier: 
   ServerAddress: 127.0.0.1:5000
+  LoginToken: 181482db-83a5-4dac-8ca4-240fb4d17f8a
