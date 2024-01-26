@@ -44,7 +44,7 @@ namespace DreamNet.Utils
             
             if (webRequest.isNetworkError)
             {
-                Debug.Log( webRequest.error + url + $"/{address}");
+                //Debug.Log( webRequest.error + url + $"/{address}");
                 onFail?.Invoke(webRequest.error);
             }
             else
@@ -54,7 +54,6 @@ namespace DreamNet.Utils
                 Result result = new Result(int.Parse( resultJObject["status"].ToString()), resultJObject["value"]);
                 if(result.Status == ResultStatus.Success) onSuccessFull?.Invoke(result.Value);
                 else onFail?.Invoke(result.Value.ToString());
-
             }
         }
         

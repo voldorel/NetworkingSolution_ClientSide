@@ -180,9 +180,8 @@ namespace DreamNet
                 });
                 
             }
-
             //DoLogin(token);
-            DoConnectToServer(DreamNetwork.DreamNetworkInstance.GetServerUrl(), token);
+            DoConnectToServer(DreamNetwork.DreamNetworkInstance.GetServerAddress(), token);
             //DoConnectToServer("localhost:5000", token);
         }
         
