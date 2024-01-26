@@ -14,8 +14,9 @@ namespace DreamNet
     public sealed class Connection : MonoBehaviour
     {
         private string _userId;//this should change to an object of a class with its own seprate file in the namespace
-        
 
+        private int _currentRandomSeed; // needs to be moved to gamesession with proper implementation
+        
         public WebSocket WebSocket;
         #region lobby_actions
         public delegate void InitialLoading();
@@ -117,7 +118,17 @@ namespace DreamNet
             _tickrateFixedTime = 50d;
         }
 
+        internal void SetRandomSeed(int randomSeed)
+        {
+            _currentRandomSeed = randomSeed;
+            Debug.Log("Random seed is set : " + randomSeed);
+        }
 
+        internal int GetRandomeSeed()
+        {
+            return _currentRandomSeed;
+        }
+        
         private void ResetSessionConfig()
         {
             _sessionTime = 0;
@@ -155,9 +166,9 @@ namespace DreamNet
                         DreamUtils.SetDreamToken((string)e["token"]);
                         
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //Debug.LogError("Error when parsing user data");
+                        Debug.LogException(ex);
                         OnConnectionFailure?.Invoke();
                     }
                     JObject jsonData = JObject.Parse(e.ToString());

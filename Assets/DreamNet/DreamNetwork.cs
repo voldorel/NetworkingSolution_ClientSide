@@ -5,7 +5,6 @@ using UnityEngine;
 using DreamNet.Config;
 using DreamNet.Utils;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 
@@ -27,8 +26,9 @@ namespace DreamNet
         [DreamByteDisclaimer] public string CopyWrite5 = "DreamByte© 2024";
         
         
-        private DreamNetConfig _dreamNetConfig;
+        [HideInInspector] public DreamNetConfig _dreamNetConfig;
         public static DreamNetwork DreamNetworkInstance;
+        
         internal Connection DreamConnection{ get; private set; }
         internal UnityMainThreadDispatcher MainThreadDispatcher { get; private set; }
         
@@ -47,6 +47,7 @@ namespace DreamNet
             {
                 Destroy(this);
             } 
+#if UNITY_EDITOR
             try
             {
                 string assetPath = "Assets/DreamNet/Config/DreamNetConfig.asset";
@@ -58,22 +59,16 @@ namespace DreamNet
                 Debug.LogError("Dream config not found.");
                 throw;
             }
-
-            try
-            {
-
-            }
-            catch
-            {
-                Debug.LogError("Connection failed!");
-            }
+#endif
         }
 
-        internal static string GetServerUrl()
+        internal string GetServerUrl()
         {
+#if UNITY_EDITOR
             string assetPath = "Assets/DreamNet/Config/DreamNetConfig.asset";
             DreamNetConfig dreamNetConfig = AssetDatabase.LoadAssetAtPath<DreamNetConfig>(assetPath) as DreamNetConfig;
-            return "http://" + dreamNetConfig.ServerAddress;
+#endif
+            return "http://" + _dreamNetConfig.ServerAddress;
         }
         
         internal string GetServerAddress()
@@ -84,6 +79,11 @@ namespace DreamNet
         public void StartDreamServer()
         {
             DreamConnection.StartDreamNet();
+        }
+
+        public int GetRandomSeed()
+        {
+            return DreamConnection.GetRandomeSeed();
         }
     }
 }

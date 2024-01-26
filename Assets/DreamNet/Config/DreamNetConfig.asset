@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d048d96e921cb843aa905c5be42cace, type: 3}
   m_Name: DreamNetConfig
   m_EditorClassIdentifier: 
-  ServerAddress: 127.0.0.1:5000
+  ServerAddress: 192.168.106.20:5000
   LoginToken: 181482db-83a5-4dac-8ca4-240fb4d17f8a

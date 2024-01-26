@@ -33,14 +33,15 @@ namespace DreamNet.Utils
         private static IEnumerator MakePostRequest(string address, JObject data, Action<JToken> onSuccessFull,
             Action<string> onFail)
         {
-            string url = DreamNetwork.GetServerUrl(); 
+            string url = DreamNetwork.DreamNetworkInstance.GetServerUrl(); 
             var webRequest = new UnityWebRequest(url + $"/{address}", "POST");
             byte[] bytes = new System.Text.UTF8Encoding().GetBytes(data.ToString());
-            webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);
-            webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            webRequest.uploadHandler = new UploadHandlerRaw(bytes);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
             //Send the request then wait here until it returns
             yield return webRequest.SendWebRequest();
+            
             if (webRequest.isNetworkError)
             {
                 Debug.Log( webRequest.error + url + $"/{address}");
@@ -80,7 +81,7 @@ namespace DreamNet.Utils
         
         private static IEnumerator MakeGetRequest(string address,Action<JToken> onSuccessFull,Action<string> onFail)
         {
-            string url = DreamNetwork.GetServerUrl();
+            string url = DreamNetwork.DreamNetworkInstance.GetServerUrl();
             using (UnityWebRequest webRequest = UnityWebRequest.Get(url + $"/{address}"))
             {
                 yield return webRequest.SendWebRequest();
@@ -120,10 +121,11 @@ namespace DreamNet.Utils
     public class DreamByteDisclaimerAttribute : PropertyAttribute
     {
     }
-    
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(DreamByteDisclaimerAttribute))]
     public class ShowOnlyDrawer : PropertyDrawer
     {
+        #if UNITY_EDITOR
         public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label)
         {
             GUIStyle myStyle = new GUIStyle();
@@ -138,6 +140,8 @@ namespace DreamNet.Utils
             Rect r = GUILayoutUtility.GetLastRect();
             EditorGUI.LabelField(r, prop.stringValue, myStyle);
         }
+        #endif
     }
+    #endif
 }
 

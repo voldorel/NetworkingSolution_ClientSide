@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -104,12 +105,14 @@ public class LobbyManager : MonoBehaviour
             if ((bool)keyValuePairs["IsInGameSession"])
             {
                 /////Debug.Log((string)keyValuePairs["matchData"]); // TODO needs a function to parse member list
+                JObject jObject = JObject.Parse((string)keyValuePairs["matchData"]);
+                Connection.Instance.SetRandomSeed(Int32.Parse((string)jObject["randomSeed"]));
                 SceneManager.LoadScene("GameScene");
             }
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("User Initialization failed");
+            Debug.LogError("Login Initialization failed");
         }
 
     }
@@ -148,6 +151,9 @@ public class LobbyManager : MonoBehaviour
     public void OnMatchMakingSuccess(string matchData)
     {
         //Debug.Log("match data is " + matchData); // TODO needs a function to parse member list
+        JObject keyValuePairs = JObject.Parse(matchData);
+        JObject jObject = JObject.Parse((string)keyValuePairs["matchData"]);
+        Connection.Instance.SetRandomSeed(Int32.Parse((string)jObject["randomSeed"]));
         SceneManager.LoadScene("GameScene");
     }
 
