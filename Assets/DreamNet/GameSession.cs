@@ -49,8 +49,8 @@ namespace DreamNet
 
         protected void InitGameSession()
         {
-            this.hideFlags = HideFlags.HideInInspector;
-
+            //this.hideFlags = HideFlags.HideInInspector;
+            Connection.Instance.DoReadySyncState();
             Connection.Instance.OnReceiveSessionText += (e) => ReceiveSessionTextMethod(e);
             Connection.Instance.OnPlayerEnterSession += (e) => PlayerEnteredMethod(e);
             Connection.Instance.OnPlayerExitSession += (e) => PlayerLeftMethod(e);
@@ -95,8 +95,8 @@ namespace DreamNet
 
         public void InvokeMethod(string methodName, string args)
         {
-            TurnBasedFighter turnBasedFighter = new TurnBasedFighter();
-            turnBasedFighter.GetType().GetMethod(methodName)?.Invoke(this, new[] { args });
+            //TurnBasedFighter turnBasedFighter = new TurnBasedFighter();
+            this.GetType().GetMethod(methodName)?.Invoke(this, new[] { args });
         }
 
         private void NetworkFunctionCallMethod(string args)

@@ -78,7 +78,8 @@ namespace DreamNet
         private int _clientTime;
         private double _tickrateFixedTime;
         private bool _missingNetEventsDownloaded;
-        internal bool IsLoadingGameSession { get; private set; }
+        private bool _isGameSceneLoaded; // set to true every time the game scene starts. bc we wanna wait for the scene to load before requesting a synchronization
+        public bool IsLoadingGameSession { get; private set; }
         private static readonly ConcurrentQueue<NetEvent> _netCallPreSyncQueue = new ConcurrentQueue<NetEvent>();
         private static readonly ConcurrentQueue<NetEvent> _liveEventQueue = new ConcurrentQueue<NetEvent>();
         #endregion
@@ -115,13 +116,15 @@ namespace DreamNet
             ResetSessionConfig();
             IsLoadingGameSession = false;
             _missingNetEventsDownloaded = false;
+            _isGameSceneLoaded = false;
             _tickrateFixedTime = 50d;
         }
 
         internal void SetRandomSeed(int randomSeed)
         {
             _currentRandomSeed = randomSeed;
-            Debug.Log("Random seed is set : " + randomSeed);
+            UnityEngine.Random.InitState(randomSeed);
+            //Debug.Log("Random seed is set : " + randomSeed);
         }
 
         internal int GetRandomeSeed()
@@ -147,10 +150,24 @@ namespace DreamNet
                 Debug.LogError("Login Failed");
             }
         }
-        
-        
-        
-        
+
+
+
+        internal void ResetGameSyncState()
+        {
+            _isGameSceneLoaded = false;
+        }
+
+        internal void DoReadySyncState()
+        {
+            StartCoroutine(WaitBeforeResync());
+        }
+
+        private IEnumerator WaitBeforeResync()
+        {
+            yield return new WaitForFixedUpdate();
+            _isGameSceneLoaded = true;
+        }
         
         
         private IEnumerator TrySignIn()
@@ -346,6 +363,7 @@ namespace DreamNet
 
                         if (requestType.Equals("SessionEnd"))
                         {
+                            _isGameSceneLoaded = false; // no need to keep syncing because game has already been finished
                             OnMatchEnd?.Invoke();
                         }
 
@@ -383,6 +401,8 @@ namespace DreamNet
                 {
                     //currently only used to keep track of session time
                     //Debug.Log(e + " " + _sessionTime + " " + _clientTime);
+                    if (!_isGameSceneLoaded)
+                        return;
                     if (e - _sessionTime > 1 && IsLoadingGameSession == false)
                     {
                         IsLoadingGameSession = true;
