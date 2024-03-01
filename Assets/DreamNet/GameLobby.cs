@@ -13,9 +13,10 @@ namespace DreamNet
         public delegate void ConnectionSuccess();
         public delegate void ConnectionFailure();
         public delegate void LoginSuccess(string text);
-
-
-
+        public delegate void UpdateResources(string text);
+        
+        
+        
         public event ReceiveLobbyMessageAction OnReceiveLobbyMessage;
         public event EnterMemberAction OnEnterLobby;
         public event ExitMemberAction OnExitLobby;
@@ -24,6 +25,7 @@ namespace DreamNet
         public event ConnectionSuccess OnConnectionSuccess;
         public event ConnectionFailure OnConnectionFailure;
         public event LoginSuccess OnLoginSuccess;
+        public event UpdateResources OnUpdateResources;
 
         public void Start()
         {
@@ -35,9 +37,9 @@ namespace DreamNet
             Connection.Instance.OnConnectionSuccess += ConnectionSuccessMethod;
             Connection.Instance.OnConnectionFailure += ConnectionFailureMethod;
             Connection.Instance.OnLoginSuccessAction += (e) => LoginSuccessMethod(e);
+            Connection.Instance.OnUpdateResouresAction += (e) => UpdateResourcesMethod(e);
         }
 
-        
 
         public async void SendLobbyText(string text)
         {
@@ -111,6 +113,11 @@ namespace DreamNet
         private void LoginSuccessMethod(string text)
         {
             OnLoginSuccess?.Invoke(text);
+        }
+
+        private void UpdateResourcesMethod(string text)
+        {
+            OnUpdateResources?.Invoke(text);
         }
 
 

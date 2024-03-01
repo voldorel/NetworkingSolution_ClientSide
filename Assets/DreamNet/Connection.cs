@@ -23,12 +23,14 @@ namespace DreamNet
         public delegate void ConnectionSuccess();
         public delegate void ConnectionFailure();
         public delegate void ReceiveMessageAction(string text);
-        public delegate void ReceiveLobbyMessageAction(string text);
+        public delegate void ReceiveLobbyMessageAction(string tex);
         public delegate void ReceiveGameMessageAction(string text);
         public delegate void ExitLobbyAction();
         public delegate void EnterLobbyAction();
         public delegate void MatchMakingSuccessAction(string matchData);
         public delegate void LoginSuccessAction(string text);
+
+        public delegate void UpdateResources(string text);
 
         public delegate void CompletionFunction();//completion action of send text
 
@@ -42,6 +44,7 @@ namespace DreamNet
         public event ConnectionFailure OnConnectionFailure;
         public event MatchMakingSuccessAction OnMatchMakingSuccess;
         public event LoginSuccessAction OnLoginSuccessAction;
+        public event UpdateResources OnUpdateResouresAction;
         #endregion
 
         #region session_actions
@@ -101,12 +104,7 @@ namespace DreamNet
                 return _netcallTime;
             }
         }
-
-
-
         internal static Connection Instance {  get; private set; }
-
-
         public void Awake()
         {
             if (Instance != null)
@@ -150,9 +148,6 @@ namespace DreamNet
                 Debug.LogError("Login Failed");
             }
         }
-
-
-
         internal void ResetGameSyncState()
         {
             _isGameSceneLoaded = false;
@@ -288,9 +283,11 @@ namespace DreamNet
                             _tickrateFixedTime = (double)keyValuePairs["ServerTickrateFixedTime"];
                             OnLoginSuccessAction?.Invoke(requestContent);
                         }
-
-
-
+                        //todo check later ###Taha 
+                        if (requestType.Equals("UpdateResourceRequest"))
+                        {
+                            OnUpdateResouresAction?.Invoke(requestContent);
+                        }
                         if (requestType.Equals("SessionText"))
                         {
                             OnReceiveSessionText?.Invoke(requestContent);

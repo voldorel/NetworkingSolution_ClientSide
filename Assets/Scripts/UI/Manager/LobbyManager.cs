@@ -26,9 +26,7 @@ public class LobbyManager : MonoBehaviour
 
     [SerializeField]
     private Button _verifyNameButton;
-
-
-
+    
 
     [SerializeField]
     private GameObject _serverLoginObject;
@@ -233,5 +231,11 @@ public class LobbyManager : MonoBehaviour
         _joinGameButton.interactable = false;
         _verifyNameButton.interactable = false;
         _joinGameButton.interactable = true;
+    }
+
+    [ContextMenu("Change Resource")]
+    public void ChangeResource()
+    {
+        DreamNet.Resources.EarnResources("Coin",10,"Test");
     }
 }
