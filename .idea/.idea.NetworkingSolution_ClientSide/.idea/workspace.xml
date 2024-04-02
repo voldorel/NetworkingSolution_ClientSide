@@ -2,14 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c8fbf3b5-990e-4d08-8d91-8a89756b2867" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/DreamNet/MetaData.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/DreamNet/MetaData/MetaData.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/DreamNet/MetaData/MetaData.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/DreamNet/UserMetaData.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/DreamNet/UserMetaData.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/DreamNet/ProfileMetaData.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Debug/DreamMetaDataTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.NetworkingSolution_ClientSide/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.NetworkingSolution_ClientSide/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/Config/DreamNetConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DreamNet/Config/DreamNetConfig.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/Connection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DreamNet/Connection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/DreamNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DreamNet/DreamNetwork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/GameLobby.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DreamNet/GameLobby.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/MetaData/MetaData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DreamNet/MetaData/MetaData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/Resources.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DreamNet/Resources.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/UserMetaData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DreamNet/ProfileMetaData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DreamNet/UserMetaData.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ChatRoom.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ChatRoom.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/TestScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/TestScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Debug/DreamMetaData.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Debug/DreamMetaData.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Debug/DreamMetaDataTest.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Manager/LobbyManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Manager/LobbyManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,10 +24,18 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/30adf90198bc4c4b83910c6fb1877998174000/00/f3d02b8b/Object.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/30adf90198bc4c4b83910c6fb1877998174000/e1/971f2227/SetupCoroutine.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7e10d17ac8864a82a99177fe6205264516c00/1c/3118b499/MetaData.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/834b2ded5dad441e8c7a4287897d63c746ac00/8b/12a88c9d/Lazy`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/DreamNet/Connection.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/DreamNet/DreamNetwork.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Debug/DreamMetaData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/DreamNet/MetaData/MetaData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/DreamNet/Resources.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/DreamNet/Utils/DreamUtils.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/DreamNet/WebSocket.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Debug/DreamMetaDataTest.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Manager/LobbyManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.sprite@1.0.0/Editor/Interface/IGL.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.sprite@1.0.0/Editor/SpriteEditor/SpriteEditorMenu.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.sprite@1.0.0/Editor/SpriteEditor/SpriteEditorWindow.cs" root0="SKIP_HIGHLIGHTING" />
@@ -29,6 +44,9 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.sprite@1.0.0/Editor/SpriteEditorModule/SpriteFrameModule/SpriteFrameModuleBaseView.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.sprite@1.0.0/Editor/SpriteEditorModule/SpriteOutlineModule.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.2d.sprite@1.0.0/Editor/SpriteEditorModule/SpriteSecondaryTexturesModule.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@14.0.9/Runtime/Debugging/DebugManager.UIState.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@14.0.9/Runtime/Debugging/DebugManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.core@14.0.9/Runtime/Debugging/DebugUpdater.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.9/Runtime/2D/UTess2D/Tessellator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/InputModules/StandaloneInputModule.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Graphic.cs" root0="SKIP_HIGHLIGHTING" />
@@ -87,10 +105,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="22556">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="3648">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="22556" />
+      <option name="pid" value="3648" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -113,7 +131,16 @@
       <workItem from="1709926871526" duration="594000" />
       <workItem from="1710186061387" duration="498000" />
       <workItem from="1710954014574" duration="9475000" />
-      <workItem from="1711018974905" duration="4232000" />
+      <workItem from="1711018974905" duration="7592000" />
+      <workItem from="1711149207548" duration="5247000" />
+      <workItem from="1711154673139" duration="1500000" />
+      <workItem from="1711195357289" duration="1130000" />
+      <workItem from="1711298210994" duration="7395000" />
+      <workItem from="1711377332586" duration="6311000" />
+      <workItem from="1711497550634" duration="2751000" />
+      <workItem from="1711729597947" duration="5064000" />
+      <workItem from="1711877212498" duration="17955000" />
+      <workItem from="1711970656651" duration="7991000" />
     </task>
     <servers />
   </component>
@@ -124,5 +151,12 @@
   <component name="UnityUnitTestConfiguration" currentTestLauncher="EditMode" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="Type#System.Collections.Generic.KeyValuePair`2" memberName="Value" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

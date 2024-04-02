@@ -1555,6 +1555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b129c6f69f407b42b6d57bb7b15fa07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  avatar: 0
   _inputText: {fileID: 1938842607}
   _nameTextInput: {fileID: 447659322}
   _serverAddressInput: {fileID: 1128907632}
@@ -4474,7 +4475,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114829032}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 232e05d6fd2248a45827648331b6d9a3, type: 3}
   m_Name: 
@@ -6606,7 +6607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1973756780
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,9 +7,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DreamNet;
+using Newtonsoft.Json;
 
 public class LobbyManager : MonoBehaviour
 {
+
+    public int avatar;
+    
     [SerializeField]
     private InputField _inputText;
     [SerializeField]
@@ -100,6 +104,9 @@ public class LobbyManager : MonoBehaviour
             MessageView.ShowLoadingView(false);
             JObject keyValuePairs = JObject.Parse(text);
             Connection.Instance.SetUserId((string)keyValuePairs["UserId"]);
+            DreamNetwork.DreamNetworkInstance.InitUserMetaData((string)keyValuePairs["UserMetaData"]);
+            DreamNetwork.DreamNetworkInstance.InitProfileMetaData(keyValuePairs["NickName"].ToString(),keyValuePairs["UserProfileInfo"].ToString());
+            DreamNet.Resources.Init(keyValuePairs["Resources"].ToString());
             if ((bool)keyValuePairs["IsInGameSession"])
             {
                 /////Debug.Log((string)keyValuePairs["matchData"]); // TODO needs a function to parse member list
@@ -110,7 +117,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("Login Initialization failed");
+            Debug.LogError("Login Initialization failed  " +ex);
         }
 
     }
@@ -236,6 +243,22 @@ public class LobbyManager : MonoBehaviour
     [ContextMenu("Change Resource")]
     public void ChangeResource()
     {
-        DreamNet.Resources.EarnResources("Coin",10,"Test");
+        try
+        {
+           // DreamNet.Resources.EarnResources("Coin",30,"Test");
+           print(DreamNetwork.UserMetaData["Taha"]["IsKewni"].AsString);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
+    }
+    [ContextMenu("Change Resource 22222222222")]
+    public void ChangeResource2()
+    {
+        // DreamNetwork.DreamNetworkInstance.ProfileMetaData.ChangeAvatarId(avatar)
+       print( " coin          "+DreamNet.Resources.GetResourceValue("Coin"));
     }
 }

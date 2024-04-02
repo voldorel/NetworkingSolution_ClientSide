@@ -29,8 +29,13 @@ namespace DreamNet
         public delegate void EnterLobbyAction();
         public delegate void MatchMakingSuccessAction(string matchData);
         public delegate void LoginSuccessAction(string text);
-
         public delegate void UpdateResources(string text);
+
+        public delegate void UpdateUserMetaData(string text);
+        public delegate void ChangeUserNickName(string text);
+        public delegate void ChangeProfileMetaData(string text);
+
+        public delegate void ChangeResource(string text);
 
         public delegate void CompletionFunction();//completion action of send text
 
@@ -44,7 +49,12 @@ namespace DreamNet
         public event ConnectionFailure OnConnectionFailure;
         public event MatchMakingSuccessAction OnMatchMakingSuccess;
         public event LoginSuccessAction OnLoginSuccessAction;
-        public event UpdateResources OnUpdateResouresAction;
+        public event UpdateResources OnUpdateResourcesAction;
+        public event UpdateUserMetaData OnUpdateUserMetaData;
+        public event ChangeUserNickName OnChangeUserNickName;
+        public event ChangeProfileMetaData OnChangeProfileMetaData;
+
+        public event ChangeResource OnChangeResource;
         #endregion
 
         #region session_actions
@@ -74,8 +84,6 @@ namespace DreamNet
         public event ExitPlayerAction OnPlayerExitSession;
 
         #endregion
-
-
         #region variables
         private int _sessionTime;
         private int _clientTime;
@@ -232,7 +240,6 @@ namespace DreamNet
                         JToken jToken = WebSocket.FromBson<JToken>(request);
                         string requestType = (string)jToken["RequestType"];
                         string requestContent = (string)jToken["Content"];
-                        Debug.Log(requestType);
                         if (requestType.Equals("LobbyMessage"))
                         {
                             OnReceiveLobbyMessage?.Invoke(requestContent);
@@ -286,8 +293,33 @@ namespace DreamNet
                         //todo check later ###Taha 
                         if (requestType.Equals("UpdateResourceRequest"))
                         {
-                            OnUpdateResouresAction?.Invoke(requestContent);
+                            OnUpdateResourcesAction?.Invoke(requestContent);
                         }
+
+                        if (requestType.Equals("ChangeUserMetaData"))
+                        {
+                            OnUpdateUserMetaData?.Invoke(requestContent);
+                        }
+
+                        if (requestType.Equals("ChangeUserNickName"))
+                        {
+                            print("Change ::::::::::::::::::::::::::::::   ");
+                            OnChangeUserNickName?.Invoke(requestContent);
+                        }
+
+                        if (requestType.Equals("ChangeProfileMetaData"))
+                        {
+                            print("Change ::::::::::::::::::::::::::::::   ");
+                            OnChangeProfileMetaData?.Invoke(requestContent);
+                        }
+
+                        if (requestType.Equals("ChangeResource"))
+                        {
+                            print("ChangeResource ::::::::::::::::::::::::::::::   ");
+                            OnChangeResource?.Invoke(requestContent);
+                        }
+
+                        // --------------------------------------------
                         if (requestType.Equals("SessionText"))
                         {
                             OnReceiveSessionText?.Invoke(requestContent);

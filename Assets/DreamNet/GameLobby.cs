@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Newtonsoft.Json.Linq;
 
 namespace DreamNet
@@ -14,8 +15,13 @@ namespace DreamNet
         public delegate void ConnectionFailure();
         public delegate void LoginSuccess(string text);
         public delegate void UpdateResources(string text);
+
+        public delegate void UpdateUserMetaData(string text);
+        public delegate void ChangeUserNickName(string text);
+        public delegate void ChangeProfileMetaData(string text);
         
-        
+        public delegate void ChangeResource(string text);
+
         
         public event ReceiveLobbyMessageAction OnReceiveLobbyMessage;
         public event EnterMemberAction OnEnterLobby;
@@ -26,6 +32,11 @@ namespace DreamNet
         public event ConnectionFailure OnConnectionFailure;
         public event LoginSuccess OnLoginSuccess;
         public event UpdateResources OnUpdateResources;
+        public event UpdateUserMetaData OnUpdateUserMetaData;
+        public event ChangeUserNickName OnChangeUserNickName;
+        public event ChangeProfileMetaData OnChangeProfileMetaData;
+        
+        public event ChangeResource OnChangeResource;
 
         public void Start()
         {
@@ -37,7 +48,21 @@ namespace DreamNet
             Connection.Instance.OnConnectionSuccess += ConnectionSuccessMethod;
             Connection.Instance.OnConnectionFailure += ConnectionFailureMethod;
             Connection.Instance.OnLoginSuccessAction += (e) => LoginSuccessMethod(e);
-            Connection.Instance.OnUpdateResouresAction += (e) => UpdateResourcesMethod(e);
+            Connection.Instance.OnUpdateResourcesAction += (e) => UpdateResourcesMethod(e);
+            Connection.Instance.OnUpdateUserMetaData += (e) => UpdateUserMetaDataMethod(e);
+            Connection.Instance.OnChangeUserNickName+= (e) => ChangeUserNickNameMethod(e);
+            Connection.Instance.OnChangeProfileMetaData+= (e) => ChangeProfileMetaDataMethod(e);
+            Connection.Instance.OnChangeResource+= (e) => ChangeResourceMethod(e);
+        }
+
+        private void OnDestroy()
+        {
+            Connection.Instance.OnUpdateResourcesAction -= (e) => UpdateResourcesMethod(e);
+            Connection.Instance.OnUpdateUserMetaData -= (e) => UpdateUserMetaDataMethod(e);
+            Connection.Instance.OnChangeUserNickName-= (e) => ChangeUserNickNameMethod(e);
+            Connection.Instance.OnChangeProfileMetaData-= (e) => ChangeProfileMetaDataMethod(e);
+            Connection.Instance.OnChangeResource-= (e) => OnChangeResource(e);
+
         }
 
 
@@ -118,6 +143,27 @@ namespace DreamNet
         private void UpdateResourcesMethod(string text)
         {
             OnUpdateResources?.Invoke(text);
+           
+        }
+
+        private void UpdateUserMetaDataMethod(string text)
+        {
+            OnUpdateUserMetaData?.Invoke(text);
+        }
+        private void ChangeUserNickNameMethod(string text)
+        {
+            OnChangeUserNickName?.Invoke(text);
+        }
+        private void ChangeProfileMetaDataMethod(string text)
+        {
+            OnChangeProfileMetaData?.Invoke(text);
+            DreamNetwork.ProfileMetaData.OnChangeUserInfo(text);
+        }
+
+        private void ChangeResourceMethod(string text)
+        {
+            OnChangeResource?.Invoke(text);
+            DreamNet.Resources.OnChangeResource(text);
         }
 
 

@@ -1,11 +1,25 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
+
 namespace DreamNet
 {
     public class MetaData
     {
-        public string NodeKey { get; private set; }
-        public object NodeValue { get; set; }
-        public Dictionary<string, MetaData> Properties { get; private set; }
+        public enum DataType
+        {
+            String,
+            Int,
+            Float
+        }
+        public Action<MetaData> OnUpdate;
+        public Action<MetaData> OnSetData;
+        public MetaData BaseNode { get; private set; }
+        public string NodeKey { get;  private set; }
+        public DataType ValueDataType { get; private set; }
+        public object NodeValue { get;  set; }
+        private Dictionary<string, MetaData> Properties { get;  set; }
+        
         public MetaData this[string key]
         {
             get
@@ -20,16 +34,15 @@ namespace DreamNet
                     return Properties[key];
                 }
             }
+            set
+            {
+                Properties.Add(key,value);
+            }
         }
-        public MetaData(string nodeKey,object nodeValue)
+        public MetaData(string nodeKey,MetaData baseNode)
         {
-            NodeKey = nodeKey;
-            NodeValue = nodeValue;
-            // Children = new List<MetaNode>();
-            Properties = new Dictionary<string, MetaData>();
-        }
-        public MetaData()
-        {
+            this.NodeKey = nodeKey;
+            this.BaseNode = baseNode;
             Properties = new Dictionary<string, MetaData>();
         }
 
@@ -37,25 +50,48 @@ namespace DreamNet
         {
             get
             {
-                return (string)NodeValue;
+                Debug.Log("Node Value :  "+NodeValue.ToString());
+                return NodeValue.ToString();
             }
             set
             {
+                ValueDataType = DataType.String;
                 NodeValue = value;
+                OnSetMetaValue(this);
             }
         }
 
         public int AsInt
         {
             get => (int)NodeValue;
-            set => NodeValue = value;
+            set
+            {
+                NodeValue = value;
+                ValueDataType = DataType.Int;
+                OnSetMetaValue(this);
+            }
         }
         public float AsFloat
         {
             get => (float)NodeValue;
-            set => NodeValue = value;
+            set
+            {
+                ValueDataType = DataType.Float;
+                NodeValue = value;
+                OnSetMetaValue(this);
+            }
         }
 
+        protected virtual void OnSetMetaValue(MetaData metaData)
+        {
+            OnSetData?.Invoke(metaData);
+            if (BaseNode!=null)
+            {
+                Debug.Log("OnSetMetaValue  Execute On Base  : "+BaseNode.NodeKey);
+                BaseNode.OnSetMetaValue(metaData);
+            }
+            Debug.Log("OnSetMetaValue  Execute On : "+NodeKey);
+        }
         public string AsStringDef(string value)
         {
             if (NodeValue != null) return (string)NodeValue;
@@ -75,9 +111,9 @@ namespace DreamNet
         }
 
         // Add a child node
-        private void AddChild(string key)
+        protected void AddChild(string key)
         {
-            Properties.Add(key,new MetaData());
+            Properties.Add(key,new MetaData(key,this));
         }
 
         public MetaData GetChild(string key)
@@ -110,6 +146,18 @@ namespace DreamNet
                 return $"{NodeKey}: {NodeValue}";
             else
                 return NodeKey;
+        }
+        public List<string> ModifiedAddress()
+        {
+            List<string> keyAddress = new List<string>();
+            MetaData tempMetaData = this;
+            while (tempMetaData.BaseNode!=null)
+            {
+                keyAddress.Add(tempMetaData.NodeKey);
+                tempMetaData = tempMetaData.BaseNode;
+            }
+            keyAddress.Reverse();
+            return keyAddress;
         }
     }
 }

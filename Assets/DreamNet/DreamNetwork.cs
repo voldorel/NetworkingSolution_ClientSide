@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using DreamNet.Config;
 using DreamNet.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine.UIElements;
+using Object = System.Object;
 
 
 namespace DreamNet
@@ -34,6 +37,10 @@ namespace DreamNet
         
         
         
+        public static MetaData UserMetaData;
+        public static ProfileMetaData ProfileMetaData;
+        
+        
         private void Awake()
         {
             if (DreamNetwork.DreamNetworkInstance == null)
@@ -42,6 +49,8 @@ namespace DreamNet
                 MainThreadDispatcher = gameObject.AddComponent<UnityMainThreadDispatcher>();
                 DreamNetworkInstance = this;
                 DontDestroyOnLoad(this);
+                
+
             }
             else
             {
@@ -84,6 +93,66 @@ namespace DreamNet
         public int GetRandomSeed()
         {
             return DreamConnection.GetRandomeSeed();
+        }
+
+        private void OnEnable()
+        {
+            // edit by taha -------------------------------------
+            ProfileMetaData = new ProfileMetaData();
+            UserMetaData = new MetaData("Root",null);
+            UserMetaData.OnSetData += PushMetaData;
+            // --------------------------------------------------
+        }
+
+        private void OnDestroy()
+        {
+            UserMetaData.OnSetData -= PushMetaData;
+        }
+        public void PushMetaData(MetaData metaData)
+        {
+            Debug.Log("Pushed Successfully !!!");
+            JObject data = new JObject();
+            JArray jArray = new JArray(metaData.ModifiedAddress());
+            data.Add("Address",jArray);
+            data.Add("Value",metaData.NodeValue.ToString());
+            data.Add("DataType",metaData.ValueDataType.ToString());
+            Connection.Instance.SendText(JsonConvert.SerializeObject(data), "ChangeUserMetaData", () =>
+            {
+                Debug.Log("Pushed Successfully !!!");
+                metaData.OnUpdate?.Invoke(metaData);
+            });
+        }
+
+        public void InitUserMetaData(string value)
+        {
+            var jsonDict = JObject.Parse(value);
+            FillMetaData(UserMetaData, jsonDict);
+        }
+
+        public void InitProfileMetaData(string nickName, string profileInfo)
+        {
+            ProfileMetaData.Init(nickName,profileInfo);
+        }
+        private void FillMetaData(MetaData metaData, JObject jObject)
+        {
+            foreach (var item in jObject)
+            {
+                var key = item.Key;
+                var value = item.Value;
+                if (value is JObject)
+                {
+                    MetaData childMetaData = new MetaData(key, metaData);
+                    FillMetaData(childMetaData,value as JObject);
+                    metaData[key] = childMetaData;
+                }
+                else
+                {
+                    metaData[key]= new MetaData(key,metaData)
+                    {
+                        NodeValue = value
+                    };
+                }
+            }
         }
     }
 }
